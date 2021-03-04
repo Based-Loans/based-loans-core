@@ -62,6 +62,26 @@ const bUSDC = {
   borrowCaps: '0'
 }
 
+const bUSDCRinkeby = {
+  tokenConfig: {
+    cToken: '#',
+    underlying: "0xeb8f08a975Ab53E34D8a0330E0D34de942C95926",
+    symbolHash: tokens.USDC.symbolHash,
+    baseUnit: 10**tokens.USDC.decimals,
+    priceSource: 1,
+    fixedPrice: 1000000,
+    uniswapMarket: '0x0000000000000000000000000000000000000000',
+    isUniswapReversed: false
+  },
+  initialExchangeRateMantissa: '200000000000000',
+  name: 'Based Loans ' + tokens.USDC.symbol,
+  symbol: 'b' + tokens.USDC.symbol,
+  decimals: tokens.USDC.decimals,
+  reserveFactorMantissa: '300000000000000000',
+  collateralFactorMantissa: '400000000000000000',
+  borrowCaps: '0'
+}
+
 const bUSDT = {
   tokenConfig: {
     cToken: '#',
@@ -111,6 +131,26 @@ const bWBTC = {
     priceSource: 2,
     fixedPrice: 0,
     uniswapMarket: '0xBb2b8038a1640196FbE3e38816F3e67Cba72D940',
+    isUniswapReversed: false
+  },
+  initialExchangeRateMantissa: '20000000000000000',
+  name: 'Based Loans ' + tokens.WBTC.symbol,
+  symbol: 'b' + tokens.WBTC.symbol,
+  decimals: tokens.WBTC.decimals,
+  reserveFactorMantissa: '300000000000000000',
+  collateralFactorMantissa: '400000000000000000',
+  borrowCaps: '0'
+}
+
+const bWBTCRinkeby = {
+  tokenConfig: {
+    cToken: '#',
+    underlying: "0xb480C498F33a664DD43Ffab82D9c49B073Db8b2c",
+    symbolHash: tokens.WBTC.symbolHash,
+    baseUnit: 10**tokens.WBTC.decimals,
+    priceSource: 2,
+    fixedPrice: 0,
+    uniswapMarket: '0x12bfA2C92F0bf1A67802E13BbC57DE89DE96b893',
     isUniswapReversed: false
   },
   initialExchangeRateMantissa: '20000000000000000',
@@ -404,5 +444,5 @@ const bFRAX = {
 
 module.exports = {
   "mainnet": {bETH, bUSDC, bUSDT, bDAI, bWBTC, bDPI, bCORE, bFARM, bESD, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX},
-  "rinkeby": {"bETH": bETHRinkeby, bUSDC, bUSDT, bDAI, bWBTC, bDPI, bCORE, bFARM, bESD, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX}
+  "rinkeby": {"bETH": bETHRinkeby, "bUSDC": bUSDCRinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bDPI, bCORE, bFARM, bESD, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX}
 };
