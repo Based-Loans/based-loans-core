@@ -7,7 +7,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const models = CONFIG.MAINNET.modelsConfig;
+  console.log(hre.network.name)
+
+  const models = CONFIG[hre.network.name].modelsConfig;
 
   for (let i = 0; i < models.length; i++) {
     const key = Object.keys(models[i])[0];

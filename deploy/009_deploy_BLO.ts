@@ -7,7 +7,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const wallet = CONFIG.MAINNET.accThatGetsAllInitialBLO;
+  const wallet = CONFIG[hre.network.name].accThatGetsAllInitialBLO;
 
   const modelDeployed = await deploy("Comp", {
     from: deployer,

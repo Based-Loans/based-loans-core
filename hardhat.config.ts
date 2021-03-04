@@ -6,11 +6,7 @@ import 'hardhat-deploy';
 import 'hardhat-deploy-ethers';
 import 'hardhat-gas-reporter';
 
-// tasks
-import './scripts/tasks.ts';
-
 const privateKey = process.env.DEV1_PRIVATE_KEY;
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const INFURA_ID = process.env.INFURA_ID;
 
 const config: HardhatUserConfig = {

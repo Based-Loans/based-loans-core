@@ -6,7 +6,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre;
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
-  const config = CONFIG.MAINNET;
+  const config = CONFIG[hre.network.name];
 
   const comptroller = new hre.ethers.Contract(
     (await deployments.get('Unitroller')).address,
