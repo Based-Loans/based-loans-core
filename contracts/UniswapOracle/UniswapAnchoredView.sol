@@ -82,6 +82,13 @@ contract UniswapAnchoredView is UniswapConfig {
      */
     function price(string memory symbol) external view returns (uint) {
         TokenConfig memory config = getTokenConfigBySymbol(symbol);
+        if (config.priceSource == PriceSource.REPORTER) return prices[config.symbolHash];
+        if (config.priceSource == PriceSource.FIXED_USD) return config.fixedPrice;
+        if (config.priceSource == PriceSource.FIXED_ETH) {
+            uint usdPerEth = prices[ethHash];
+            require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
+            return mul(usdPerEth, config.fixedPrice) / ethBaseUnit;
+        }
         return prices[config.symbolHash];
     }
 
@@ -169,12 +176,7 @@ contract UniswapAnchoredView is UniswapConfig {
 
         // Adjust rawUniswapPrice according to the units of the non-ETH asset
         // In the case of ETH, we would have to scale by 1e6 / USDC_UNITS, but since baseUnit2 is 1e6 (USDC), it cancels
-        if (config.isUniswapReversed) {
-            // unscaledPriceMantissa * ethBaseUnit / config.baseUnit / expScale, but we simplify bc ethBaseUnit == expScale
-            anchorPrice = unscaledPriceMantissa / config.baseUnit;
-        } else {
-            anchorPrice = mul(unscaledPriceMantissa, config.baseUnit) / ethBaseUnit / expScale;
-        }
+        anchorPrice = mul(unscaledPriceMantissa, config.baseUnit) / ethBaseUnit / expScale;
 
         emit AnchorPriceUpdated(config.cToken, anchorPrice, oldTimestamp, block.timestamp);
 

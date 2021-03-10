@@ -31,7 +31,7 @@ const bETHRinkeby = {
     priceSource: 2,
     fixedPrice: 0,
     uniswapMarket: '0xB1bC33810F9e6E8D417925236991Fcc5012AaaE8',
-    isUniswapReversed: true
+    isUniswapReversed: false
   },
   initialExchangeRateMantissa: '200000000000000000000000000',
   name: 'Based Loans ETH',
