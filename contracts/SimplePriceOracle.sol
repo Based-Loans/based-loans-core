@@ -1,4 +1,6 @@
-pragma solidity ^0.5.16;
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.6.12;
 
 import "./PriceOracle.sol";
 import "./CErc20.sol";
@@ -7,7 +9,7 @@ contract SimplePriceOracle is PriceOracle {
     mapping(address => uint) prices;
     event PricePosted(address asset, uint previousPriceMantissa, uint requestedPriceMantissa, uint newPriceMantissa);
 
-    function getUnderlyingPrice(CToken cToken) public returns (uint) {
+    function getUnderlyingPrice(CToken cToken) public override returns (uint) {
         if (compareStrings(cToken.symbol(), "cETH")) {
             return 1e18;
         } else {

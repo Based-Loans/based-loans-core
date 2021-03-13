@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.5.16;
+pragma solidity 0.6.12;
 
 import "./JumpRateModelV2.sol";
 import "./SafeMath.sol";
@@ -50,7 +50,7 @@ contract DAIInterestRateModelV3 is JumpRateModelV2 {
      * @param jumpMultiplierPerYear The jumpMultiplierPerYear after hitting a specified utilization point
      * @param kink_ The utilization point at which the jump multiplier is applied
      */
-    function updateJumpRateModel(uint baseRatePerYear, uint gapPerYear, uint jumpMultiplierPerYear, uint kink_) external {
+    function updateJumpRateModel(uint baseRatePerYear, uint gapPerYear, uint jumpMultiplierPerYear, uint kink_) external override {
         require(msg.sender == owner, "only the owner may call this function.");
         gapPerBlock = gapPerYear / blocksPerYear;
         updateJumpRateModelInternal(0, 0, jumpMultiplierPerYear, kink_);
@@ -65,7 +65,7 @@ contract DAIInterestRateModelV3 is JumpRateModelV2 {
      * @param reserveFactorMantissa The current reserve factor the market has
      * @return The supply rate per block (as a percentage, and scaled by 1e18)
      */
-    function getSupplyRate(uint cash, uint borrows, uint reserves, uint reserveFactorMantissa) public view returns (uint) {
+    function getSupplyRate(uint cash, uint borrows, uint reserves, uint reserveFactorMantissa) public view override returns (uint) {
         uint protocolRate = super.getSupplyRate(cash, borrows, reserves, reserveFactorMantissa);
 
         uint underlying = cash.add(borrows).sub(reserves);
@@ -112,14 +112,14 @@ contract DAIInterestRateModelV3 is JumpRateModelV2 {
 
 /*** Maker Interfaces ***/
 
-contract PotLike {
-    function chi() external view returns (uint);
-    function dsr() external view returns (uint);
-    function rho() external view returns (uint);
-    function pie(address) external view returns (uint);
-    function drip() external returns (uint);
-    function join(uint) external;
-    function exit(uint) external;
+abstract contract PotLike {
+    function chi() external virtual view returns (uint);
+    function dsr() external virtual view returns (uint);
+    function rho() external virtual view returns (uint);
+    function pie(address) external virtual view returns (uint);
+    function drip() external virtual returns (uint);
+    function join(uint) external virtual;
+    function exit(uint) external virtual;
 }
 
 contract JugLike {
