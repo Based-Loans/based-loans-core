@@ -89,7 +89,7 @@ contract UniswapAnchoredView is UniswapConfig {
             require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
             return mul(usdPerEth, config.fixedPrice) / ethBaseUnit;
         }
-        return prices[config.symbolHash];
+        return 0;
     }
 
     function priceInternal(TokenConfig memory config) internal returns (uint) {
@@ -108,6 +108,27 @@ contract UniswapAnchoredView is UniswapConfig {
             require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
             return mul(usdPerEth, config.fixedPrice) / ethBaseUnit;
         }
+    }
+
+    /**
+     * @notice Get the underlying price of a cToken
+     * @dev Implements the PriceOracle interface for Compound v2.
+     * @param cToken The cToken address for price retrieval
+     * @return Price denominated in USD, with 18 decimals, for the given cToken address
+     */
+    function getUnderlyingPriceView(address cToken) external view returns (uint) {
+        TokenConfig memory config = getTokenConfigByCToken(cToken);
+        uint price;
+        if (config.priceSource == PriceSource.REPORTER) price = prices[config.symbolHash];
+        if (config.priceSource == PriceSource.FIXED_USD) price = config.fixedPrice;
+        if (config.priceSource == PriceSource.FIXED_ETH) {
+            uint usdPerEth = prices[ethHash];
+            require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
+            price = mul(usdPerEth, config.fixedPrice) / ethBaseUnit;
+        }
+         // Comptroller needs prices in the format: ${raw price} * 1e(36 - baseUnit)
+         // Since the prices in this view have 6 decimals, we must scale them by 1e(36 - 6 - baseUnit)
+        return mul(1e30, price) / config.baseUnit;
     }
 
     /**
