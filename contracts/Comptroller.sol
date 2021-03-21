@@ -300,7 +300,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         return uint(Error.NO_ERROR);
     }
 
-    // oracle: ok
     function redeemAllowedInternal(address cToken, address redeemer, uint redeemTokens) internal returns (uint) {
         if (!markets[cToken].isListed) {
             return uint(Error.MARKET_NOT_LISTED);
@@ -341,7 +340,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         }
     }
 
-    // oracle: ok
     /**
      * @notice Checks if the account should be allowed to borrow the underlying asset of the given market
      * @param cToken The market to verify the borrow against
@@ -677,7 +675,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         Exp tokensToDenom;
     }
 
-    // oracle: ?
     /**
      * @notice Determine the current account liquidity wrt collateral requirements
      * @return (possible error code (semi-opaque),
@@ -690,7 +687,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         return (uint(err), liquidity, shortfall);
     }
 
-    // oracle: ok
     /**
      * @notice Determine the current account liquidity wrt collateral requirements
      * @return (possible error code,
@@ -701,7 +697,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         return getHypotheticalAccountLiquidityInternal(account, CToken(0), 0, 0);
     }
 
-    // oracle: ?
     /**
      * @notice Determine what the account liquidity would be if the given amounts were redeemed/borrowed
      * @param cTokenModify The market to hypothetically redeem/borrow in
@@ -721,7 +716,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         return (uint(err), liquidity, shortfall);
     }
 
-    // oracle: ?
     /**
      * @notice Determine what the account liquidity would be if the given amounts were redeemed/borrowed
      * @param cTokenModify The market to hypothetically redeem/borrow in
@@ -808,7 +802,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         }
     }
 
-    // oracle: ok
     /**
      * @notice Calculate number of tokens of collateral asset to seize given an underlying amount
      * @dev Used in liquidation (called in cToken.liquidateBorrowFresh)
@@ -916,7 +909,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         return uint(Error.NO_ERROR);
     }
 
-    // oracle: ok
     /**
       * @notice Sets the collateralFactor for a market
       * @dev Admin function to set per-market collateralFactor
@@ -1055,7 +1047,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
       * @param newBorrowCaps The new borrow cap values in underlying to be set. A value of 0 corresponds to unlimited borrowing.
       */
     function _setMarketBorrowCaps(CToken[] calldata cTokens, uint[] calldata newBorrowCaps) external {
-    	require(msg.sender == admin || msg.sender == borrowCapGuardian, "only admin or borrow cap guardian can set borrow caps");
+    	require(msg.sender == admin || msg.sender == borrowCapGuardian, "not an admin");
 
         uint numMarkets = cTokens.length;
         uint numBorrowCaps = newBorrowCaps.length;
@@ -1073,7 +1065,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
      * @param newBorrowCapGuardian The address of the new Borrow Cap Guardian
      */
     function _setBorrowCapGuardian(address newBorrowCapGuardian) external {
-        require(msg.sender == admin, "only admin can set borrow cap guardian");
+        require(msg.sender == admin, "not an admin");
 
         // Save current value for inclusion in log
         address oldBorrowCapGuardian = borrowCapGuardian;
@@ -1110,7 +1102,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
     function _setMintPaused(CToken cToken, bool state) public returns (bool) {
         require(markets[address(cToken)].isListed, "cannot pause a market that is not listed");
         require(msg.sender == pauseGuardian || msg.sender == admin, "only pause guardian and admin can pause");
-        require(msg.sender == admin || state == true, "only admin can unpause");
+        require(msg.sender == admin || state == true, "not an admin");
 
         mintGuardianPaused[address(cToken)] = state;
         emit ActionPaused(cToken, "Mint", state);
@@ -1120,7 +1112,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
     function _setBorrowPaused(CToken cToken, bool state) public returns (bool) {
         require(markets[address(cToken)].isListed, "cannot pause a market that is not listed");
         require(msg.sender == pauseGuardian || msg.sender == admin, "only pause guardian and admin can pause");
-        require(msg.sender == admin || state == true, "only admin can unpause");
+        require(msg.sender == admin || state == true, "not an admin");
 
         borrowGuardianPaused[address(cToken)] = state;
         emit ActionPaused(cToken, "Borrow", state);
@@ -1129,7 +1121,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
 
     function _setTransferPaused(bool state) public returns (bool) {
         require(msg.sender == pauseGuardian || msg.sender == admin, "only pause guardian and admin can pause");
-        require(msg.sender == admin || state == true, "only admin can unpause");
+        require(msg.sender == admin || state == true, "not an admin");
 
         transferGuardianPaused = state;
         emit ActionPaused("Transfer", state);
@@ -1138,7 +1130,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
 
     function _setSeizePaused(bool state) public returns (bool) {
         require(msg.sender == pauseGuardian || msg.sender == admin, "only pause guardian and admin can pause");
-        require(msg.sender == admin || state == true, "only admin can unpause");
+        require(msg.sender == admin || state == true, "not an admin");
 
         seizeGuardianPaused = state;
         emit ActionPaused("Seize", state);
@@ -1167,7 +1159,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
         refreshCompSpeedsInternal();
     }
 
-    // oracle: ok
     function refreshCompSpeedsInternal() internal {
         CToken[] memory allMarkets_ = allMarkets;
 
@@ -1357,11 +1348,20 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
     /*** Comp Distribution Admin ***/
 
     /**
+     * @notice Set the COMP token address
+     * @param _comp The COMP address
+     */
+    function _setCompAddress(address _comp) public {
+        require(msg.sender == admin, "not an admin");
+        comp = _comp;
+    }
+
+    /**
      * @notice Set the amount of COMP distributed per block
      * @param compRate_ The amount of COMP wei per block to distribute
      */
     function _setCompRate(uint compRate_) public {
-        require(adminOrInitializing(), "only admin can change comp rate");
+        require(adminOrInitializing(), "not an admin");
 
         uint oldRate = compRate;
         compRate = compRate_;
@@ -1375,7 +1375,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
      * @param cTokens The addresses of the markets to add
      */
     function _addCompMarkets(address[] memory cTokens) public {
-        require(adminOrInitializing(), "only admin can add comp market");
+        require(adminOrInitializing(), "not an admin");
 
         for (uint i = 0; i < cTokens.length; i++) {
             _addCompMarketInternal(cTokens[i]);
@@ -1412,7 +1412,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
      * @param cToken The address of the market to drop
      */
     function _dropCompMarket(address cToken) public {
-        require(msg.sender == admin, "only admin can drop comp market");
+        require(msg.sender == admin, "not an admin");
 
         Market storage market = markets[cToken];
         require(market.isComped == true, "market is not a comp market");
@@ -1441,6 +1441,6 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
      * @return The address of COMP
      */
     function getCompAddress() public view returns (address) {
-        return 0xc00e94Cb662C3520282E6f5717214004A7f26888;
+        return comp;
     }
 }
