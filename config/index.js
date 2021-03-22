@@ -3,6 +3,7 @@
 const ethers = require('ethers');
 const marketsConfig = require('./marketsConfig');
 const modelsConfig = require('./modelsConfig');
+const stakeConfig = require('./stakeConfig');
 
 const mainnet = {
   anchorPeriod: 1800,
