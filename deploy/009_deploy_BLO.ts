@@ -13,12 +13,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await hre.ethers.provider.getSigner(deployer)
   );
 
-  const owner = CONFIG[hre.network.name].accThatGetsAllInitialBLO
-
   await deploy("Comp", {
     from: deployer,
     log: true,
-    args: [owner]
+    args: [deployer]
   })
 
   const compAddress = (await deployments.get('Comp')).address
@@ -30,6 +28,43 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   } else {
     console.log(`skipping Comptroller._setCompAddress (compAddress: ${compAddress})`)
   }
+
+  const comptrollerCompBalance = CONFIG[hre.network.name].comptrollerCompBalance
+  if (comptrollerCompBalance > 0) {
+    await execute(
+      'Comp',
+      {from: deployer, log: true},
+      'transfer',
+      comptroller.address,
+      comptrollerCompBalance
+    );
+  } else {
+    console.log(`skipping Comp.transfer to comptroller (comptrollerCompBalance: ${comptrollerCompBalance})`)
+  }
+
+  const compRate = CONFIG[hre.network.name].compRate
+  if (compRate > 0) {
+    let tx = await comptroller._setCompRate(compRate)
+    tx = await tx.wait()
+    console.log(`executing Comptroller._setCompRate (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
+  } else {
+    console.log(`skipping Comptroller._setCompRate (compRate: ${compRate})`)
+  }
+
+  const owner = CONFIG[hre.network.name].accThatGetsAllInitialBLO
+  if (owner != deployer) {
+    await execute(
+      'Comp',
+      {from: deployer, log: true},
+      'transfer',
+      owner,
+      await read('Comp', 'balanceOf', deployer)
+    );
+  } else {
+    console.log(`skipping Comp.transfer to owner (owner: ${owner}, deployer: ${deployer})`)
+  }
+
+
 };
 export default func;
 func.tags = ['comp'];
