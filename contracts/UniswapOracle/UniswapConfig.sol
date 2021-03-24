@@ -39,11 +39,12 @@ contract UniswapConfig is Ownable {
     uint public numTokens;
 
     function _addTokensInternal(TokenConfig[] memory configs) internal {
-        for (uint i = numTokens; i < configs.length; i++) {
-            tokens[i] = configs[i];
-            cTokenIndex[configs[i].cToken] = i;
-            underlyingIndex[configs[i].underlying] = i;
-            symbolHashIndex[configs[i].symbolHash] = i;
+        for (uint i = 0; i < configs.length; i++) {
+            uint index = i + numTokens;
+            tokens[index] = configs[i];
+            cTokenIndex[configs[i].cToken] = index;
+            underlyingIndex[configs[i].underlying] = index;
+            symbolHashIndex[configs[i].symbolHash] = index;
         }
 
         numTokens = numTokens + configs.length;
