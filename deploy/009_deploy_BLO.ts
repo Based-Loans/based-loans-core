@@ -30,7 +30,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   const comptrollerCompBalance = CONFIG[hre.network.name].comptrollerCompBalance
-  if (comptrollerCompBalance > 0) {
+  if (comptrollerCompBalance > 0 && (await read('Comp', 'balanceOf', comptroller.address)) == 0) {
     await execute(
       'Comp',
       {from: deployer, log: true},
@@ -43,7 +43,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   const compRate = CONFIG[hre.network.name].compRate
-  if (compRate > 0) {
+  if (compRate > 0 && (await comptroller.compRate()) != compRate) {
     let tx = await comptroller._setCompRate(compRate)
     tx = await tx.wait()
     console.log(`executing Comptroller._setCompRate (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
@@ -52,7 +52,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   const owner = CONFIG[hre.network.name].accThatGetsAllInitialBLO
-  if (owner != deployer) {
+  if (owner != deployer && (await read('Comp', 'balanceOf', comptroller.address)) > 0) {
     await execute(
       'Comp',
       {from: deployer, log: true},
