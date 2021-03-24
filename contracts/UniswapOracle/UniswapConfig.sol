@@ -38,18 +38,6 @@ contract UniswapConfig is Ownable {
     /// @notice The number of tokens this contract actually supports
     uint public numTokens;
 
-    /**
-     * @notice Construct an immutable store of configs into the contract data
-     * @param configs The configs for the supported assets
-     */
-    constructor(TokenConfig[] memory configs) public {
-        _addTokensInternal(configs);
-    }
-
-    function addTokens(TokenConfig[] memory configs) public onlyOwner {
-        _addTokensInternal(configs);
-    }
-
     function _addTokensInternal(TokenConfig[] memory configs) internal {
         for (uint i = numTokens; i < configs.length; i++) {
             tokens[i] = configs[i];
