@@ -12,6 +12,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const bETH = await deployments.get('CEther');
   const bUSDC = await deployments.get('CErc20Immutable.bUSDC');
   const bWBTC = await deployments.get('CErc20Immutable.bWBTC');
+  const bESD = await deployments.get('CErc20Immutable.bESD');
 
   let bEthConfig = config.marketsConfig.bETH.tokenConfig;
   bEthConfig.cToken = bETH.address;
@@ -19,16 +20,36 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   bUsdcConfig.cToken = bUSDC.address;
   let bWBtcConfig = config.marketsConfig.bWBTC.tokenConfig;
   bWBtcConfig.cToken = bWBTC.address;
-  const tokenConfigs = [bEthConfig, bUsdcConfig, bWBtcConfig];
+  let bESDConfig = config.marketsConfig.bESD.tokenConfig;
+  bESDConfig.cToken = bESD.address;
+
+  let tokenList = [bEthConfig, bUsdcConfig, bWBtcConfig, bESDConfig];
+  let tokenConfigs = [];
 
   const uniswapOracle = await deploy("UniswapAnchoredView", {
     from: deployer,
     log: true,
-    args: [
-      config.anchorPeriod,
-      tokenConfigs
-    ]
+    args: [config.anchorPeriod]
   });
+
+  for (let index = 0; index < tokenList.length; index++) {
+    let i = await read('UniswapAnchoredView', 'cTokenIndex', tokenList[index].cToken);
+    if (i == 0) {
+      let token = await read('UniswapAnchoredView', 'tokens', i);
+      if (token.cToken != tokenList[index].cToken) {
+        tokenConfigs.push(tokenList[index]);
+      }
+    }
+  }
+
+  if (tokenConfigs.length > 0) {
+    await execute(
+      'UniswapAnchoredView',
+      {from: deployer, log: true},
+      'addTokens',
+      tokenConfigs
+    );
+  }
 };
 export default func;
 func.tags = ['uniswapOracle'];
