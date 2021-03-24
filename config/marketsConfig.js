@@ -77,7 +77,7 @@ const bUSDCRinkeby = {
   name: 'Based Loans ' + tokens.USDC.symbol,
   symbol: 'b' + tokens.USDC.symbol,
   decimals: tokens.USDC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -157,7 +157,7 @@ const bWBTCRinkeby = {
   name: 'Based Loans ' + tokens.WBTC.symbol,
   symbol: 'b' + tokens.WBTC.symbol,
   decimals: tokens.WBTC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -227,10 +227,10 @@ const bESD = {
     cToken: '#',
     underlying: tokens.ESD.address,
     symbolHash: tokens.ESD.symbolHash,
-    baseUnit: 10**tokens.ESD.decimals,
+    baseUnit: (10**tokens.ESD.decimals).toString(),
     priceSource: 2,
     fixedPrice: 0,
-    uniswapMarket: '0x0000000000000000000000000000000000000000',
+    uniswapMarket: '0x4acDB58fD79556cD276a08ec2e599d48A1ac6290',
     isUniswapReversed: false
   },
   initialExchangeRateMantissa: '200000000000000000000000000',
@@ -247,17 +247,17 @@ const bTNTRinkeby = {
     cToken: '#',
     underlying: '0x8eca7c70f4CEAE3eA6fDe71c0F0bc616e9750d0a',
     symbolHash: '0x2656f58b0a73a32f9b4ad1c8eec5812754603b0309487bb4d296a7758f796e1c',
-    baseUnit: 18,
+    baseUnit: '1000000000000000000',
     priceSource: 2,
     fixedPrice: 0,
     uniswapMarket: '0x9aAFE005B26139EddE8666Dd63b50036b273Bc42',
     isUniswapReversed: false
   },
   initialExchangeRateMantissa: '200000000000000000000000000',
-  name: 'Based Loans ' + tokens.ESD.symbol,
-  symbol: 'b' + tokens.ESD.symbol,
+  name: 'Based Loans TNT',
+  symbol: 'bTNT',
   decimals: tokens.ESD.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
