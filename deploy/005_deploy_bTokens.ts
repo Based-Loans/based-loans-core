@@ -35,30 +35,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       ]
     });
   }
-
-  // OAHighJumpModel Assets
-  const bESD = config.marketsConfig.bESD;
-
-  const tokenOAHJConfigs = [bESD];
-
-  for (let i = 0; i < tokenOAHJConfigs.length; i++) {
-    const bToken = tokenOAHJConfigs[i];
-    const cErc20Immutable = await deploy("CErc20Immutable." + bToken.symbol, {
-      contract: "CErc20Immutable",
-      from: deployer,
-      log: true,
-      args: [
-        bToken.tokenConfig.underlying,
-        comptroller.address,
-        OAHighJumpModel.address,
-        bToken.initialExchangeRateMantissa,
-        bToken.name,
-        bToken.symbol,
-        bToken.decimals,
-        deployer
-      ]
-    });
-  }
 };
 export default func;
-func.tags = ['ethMarket'];
+func.tags = ['ethMarket', 'alpha'];
