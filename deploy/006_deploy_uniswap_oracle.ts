@@ -12,7 +12,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const bETH = await deployments.get('CEther');
   const bUSDC = await deployments.get('CErc20Immutable.bUSDC');
   const bWBTC = await deployments.get('CErc20Immutable.bWBTC');
-  // const bESD = await deployments.get('CErc20Immutable.bESD');
 
   let bEthConfig = config.marketsConfig.bETH.tokenConfig;
   bEthConfig.cToken = bETH.address;
