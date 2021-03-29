@@ -10,14 +10,14 @@ const privateKey = process.env.DEV1_PRIVATE_KEY;
 const INFURA_ID = process.env.INFURA_ID;
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: "rinkeby",
   networks: {
     hardhat: {
       forking: {
-        url: "https://mainnet.infura.io/v3/" + INFURA_ID,
-        // url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
-        // blockNumber: 8208002
-        blockNumber: 11799001
+        // url: "https://mainnet.infura.io/v3/" + INFURA_ID,
+        // blockNumber: 11799001
+        url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
+        // blockNumber: 8208002,
       }
     },
     localhost: {
@@ -65,7 +65,7 @@ const config: HardhatUserConfig = {
     gasPrice: 100,
     enabled: process.env.REPORT_GAS ? true : false,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
-    maxMethodDiff: 10,
+    maxMethodDiff: 100,
   },
   mocha: {
     timeout: 0,
