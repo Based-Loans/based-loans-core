@@ -15,6 +15,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const bETH = await deployments.get('CEther');
   const bUSDC = await deployments.get('CErc20Immutable.bUSDC');
   const bWBTC = await deployments.get('CErc20Immutable.bWBTC');
+  // const bESD = await deployments.get('CErc20Immutable.bESD');
 
   let bEthConfig = config.marketsConfig.bETH;
   bEthConfig.cToken = bETH.address;
@@ -38,7 +39,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         bTokenConfig.reserveFactorMantissa
       );
     } else {
-      console.log(`skipping CEther._setReserveFactor (reserveFactorMantissa (${bTokenConfig.symbol}): ${(await read('CEther', 'reserveFactorMantissa')).toString()})`)
+      console.log(`skipping ${bTokenConfig.name}._setReserveFactor (reserveFactorMantissa (${bTokenConfig.symbol}): ${(await read(bTokenConfig.name, 'reserveFactorMantissa')).toString()})`)
     }
 
     if(!(await comptroller.markets(bTokenConfig.cToken)).isListed) {
@@ -74,4 +75,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 };
 export default func;
-func.tags = ['comptrollerConfig'];
+func.tags = ['comptrollerConfig', 'alpha'];

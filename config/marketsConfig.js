@@ -17,7 +17,7 @@ const bETH = {
   name: 'Based Loans ETH',
   symbol: 'bETH',
   decimals: '18',
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -37,7 +37,7 @@ const bETHRinkeby = {
   name: 'Based Loans ETH',
   symbol: 'bETH',
   decimals: '18',
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -57,7 +57,7 @@ const bUSDC = {
   name: 'Based Loans ' + tokens.USDC.symbol,
   symbol: 'b' + tokens.USDC.symbol,
   decimals: tokens.USDC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -77,7 +77,7 @@ const bUSDCRinkeby = {
   name: 'Based Loans ' + tokens.USDC.symbol,
   symbol: 'b' + tokens.USDC.symbol,
   decimals: tokens.USDC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -97,7 +97,7 @@ const bUSDT = {
   name: 'Based Loans ' + tokens.USDT.symbol,
   symbol: 'b' + tokens.USDT.symbol,
   decimals: tokens.USDT.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -117,7 +117,7 @@ const bDAI = {
   name: 'Based Loans ' + tokens.DAI.symbol,
   symbol: 'b' + tokens.DAI.symbol,
   decimals: tokens.DAI.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -137,7 +137,7 @@ const bWBTC = {
   name: 'Based Loans ' + tokens.WBTC.symbol,
   symbol: 'b' + tokens.WBTC.symbol,
   decimals: tokens.WBTC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -157,7 +157,7 @@ const bWBTCRinkeby = {
   name: 'Based Loans ' + tokens.WBTC.symbol,
   symbol: 'b' + tokens.WBTC.symbol,
   decimals: tokens.WBTC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -177,7 +177,7 @@ const bDPI = {
   name: 'Based Loans ' + tokens.DPI.symbol,
   symbol: 'b' + tokens.DPI.symbol,
   decimals: tokens.DPI.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0'
 }
@@ -197,7 +197,7 @@ const bCORE = {
   name: 'Based Loans ' + tokens.CORE.symbol,
   symbol: 'b' + tokens.CORE.symbol,
   decimals: tokens.CORE.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -217,7 +217,7 @@ const bFARM = {
   name: 'Based Loans ' + tokens.FARM.symbol,
   symbol: 'b' + tokens.FARM.symbol,
   decimals: tokens.FARM.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -227,17 +227,37 @@ const bESD = {
     cToken: '#',
     underlying: tokens.ESD.address,
     symbolHash: tokens.ESD.symbolHash,
-    baseUnit: 10**tokens.ESD.decimals,
+    baseUnit: (10**tokens.ESD.decimals).toString(),
     priceSource: 2,
     fixedPrice: 0,
-    uniswapMarket: '0x0000000000000000000000000000000000000000',
+    uniswapMarket: '0x4acDB58fD79556cD276a08ec2e599d48A1ac6290',
     isUniswapReversed: false
   },
   initialExchangeRateMantissa: '200000000000000000000000000',
   name: 'Based Loans ' + tokens.ESD.symbol,
   symbol: 'b' + tokens.ESD.symbol,
   decimals: tokens.ESD.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
+  collateralFactorMantissa: '0',
+  borrowCaps: '0'
+}
+
+const bESDRinkeby = {
+  tokenConfig: {
+    cToken: '#',
+    underlying: '0x8eca7c70f4CEAE3eA6fDe71c0F0bc616e9750d0a',
+    symbolHash: tokens.ESD.symbolHash,
+    baseUnit: (10**tokens.ESD.decimals).toString(),
+    priceSource: 2,
+    fixedPrice: 0,
+    uniswapMarket: '0x9aAFE005B26139EddE8666Dd63b50036b273Bc42',
+    isUniswapReversed: false
+  },
+  initialExchangeRateMantissa: '200000000000000000000000000',
+  name: 'Based Loans ' + tokens.ESD.symbol,
+  symbol: 'b' + tokens.ESD.symbol,
+  decimals: tokens.ESD.decimals,
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -257,7 +277,7 @@ const bRSR = {
   name: 'Based Loans ' + tokens.RSR.symbol,
   symbol: 'b' + tokens.RSR.symbol,
   decimals: tokens.RSR.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -277,7 +297,7 @@ const bPICKLE = {
   name: 'Based Loans ' + tokens.PICKLE.symbol,
   symbol: 'b' + tokens.PICKLE.symbol,
   decimals: tokens.PICKLE.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -297,7 +317,7 @@ const bHEX = {
   name: 'Based Loans ' + tokens.HEX.symbol,
   symbol: 'b' + tokens.HEX.symbol,
   decimals: tokens.HEX.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -317,7 +337,7 @@ const bCVP = {
   name: 'Based Loans ' + tokens.CVP.symbol,
   symbol: 'b' + tokens.CVP.symbol,
   decimals: tokens.CVP.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -337,7 +357,7 @@ const bAUDIO = {
   name: 'Based Loans ' + tokens.AUDIO.symbol,
   symbol: 'b' + tokens.AUDIO.symbol,
   decimals: tokens.AUDIO.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -357,7 +377,7 @@ const bHEGIC = {
   name: 'Based Loans ' + tokens.HEGIC.symbol,
   symbol: 'b' + tokens.HEGIC.symbol,
   decimals: tokens.HEGIC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -377,7 +397,7 @@ const bDHT = {
   name: 'Based Loans ' + tokens.DHT.symbol,
   symbol: 'b' + tokens.DHT.symbol,
   decimals: tokens.DHT.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -397,7 +417,7 @@ const bBAC = {
   name: 'Based Loans ' + tokens.BAC.symbol,
   symbol: 'b' + tokens.BAC.symbol,
   decimals: tokens.BAC.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -417,7 +437,7 @@ const bBAS = {
   name: 'Based Loans ' + tokens.BAS.symbol,
   symbol: 'b' + tokens.BAS.symbol,
   decimals: tokens.BAS.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
@@ -437,12 +457,12 @@ const bFRAX = {
   name: 'Based Loans ' + tokens.FRAX.symbol,
   symbol: 'b' + tokens.FRAX.symbol,
   decimals: tokens.FRAX.decimals,
-  reserveFactorMantissa: '300000000000000000',
+  reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0'
 }
 
 module.exports = {
   "mainnet": {bETH, bUSDC, bUSDT, bDAI, bWBTC, bDPI, bCORE, bFARM, bESD, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX},
-  "rinkeby": {"bETH": bETHRinkeby, "bUSDC": bUSDCRinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bDPI, bCORE, bFARM, bESD, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX}
+  "rinkeby": {"bETH": bETHRinkeby, "bUSDC": bUSDCRinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bDPI, bCORE, bFARM, "bESD": bESDRinkeby, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX}
 };

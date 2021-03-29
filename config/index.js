@@ -12,7 +12,9 @@ const mainnet = {
   liquidationIncentiveMantissa: '1250000000000000000',
   modelsConfig: modelsConfig.mainnet,
   marketsConfig: marketsConfig.mainnet,
-  accThatGetsAllInitialBLO: "0x9e3C40045A3503b33BfEdAEA0BF6981120E8c753"
+  compRate: "176000000000000000",
+  comptrollerCompBalance: "10000" + "000000000000000000", // 10k BLO
+  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051"
 };
 
 const rinkeby = {
@@ -22,7 +24,9 @@ const rinkeby = {
   liquidationIncentiveMantissa: '1250000000000000000',
   modelsConfig: modelsConfig.rinkeby,
   marketsConfig: marketsConfig.rinkeby,
-  accThatGetsAllInitialBLO: "0x9e3C40045A3503b33BfEdAEA0BF6981120E8c753"
+  compRate: "176000000000000000",
+  comptrollerCompBalance: "10000" + "000000000000000000", // 10k BLO
+  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051"
 };
 
 const mainnet_fork = mainnet;

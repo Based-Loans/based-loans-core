@@ -48,21 +48,20 @@ contract UniswapAnchoredView is UniswapConfig {
      * @notice Construct a uniswap anchored view for a set of token configurations
      * @dev Note that to avoid immature TWAPs, the system must run for at least a single anchorPeriod before using.
      * @param anchorPeriod_ The minimum amount of time required for the old uniswap price accumulator to be replaced
-     * @param configs The static token configurations which define what prices are supported and how
      */
-    constructor(
-        uint anchorPeriod_,
-        TokenConfig[] memory configs
-    ) UniswapConfig(configs) public {
+    constructor(uint anchorPeriod_) public {
         anchorPeriod = anchorPeriod_;
+    }
 
+    function addTokens(TokenConfig[] memory configs) public onlyOwner {
         for (uint i = 0; i < configs.length; i++) {
             TokenConfig memory config = configs[i];
+            bytes32 symbolHash = config.symbolHash;
             require(config.baseUnit > 0, "baseUnit must be greater than zero");
+            require(newObservations[symbolHash].timestamp == uint(0), "cannot change current token");
             address uniswapMarket = config.uniswapMarket;
             if (config.priceSource == PriceSource.REPORTER) {
                 require(uniswapMarket != address(0), "reported prices must have an anchor");
-                bytes32 symbolHash = config.symbolHash;
                 uint cumulativePrice = currentCumulativePrice(config);
                 oldObservations[symbolHash].timestamp = block.timestamp;
                 newObservations[symbolHash].timestamp = block.timestamp;
@@ -73,6 +72,8 @@ contract UniswapAnchoredView is UniswapConfig {
                 require(uniswapMarket == address(0), "only reported prices utilize an anchor");
             }
         }
+
+        _addTokensInternal(configs);
     }
 
     /**

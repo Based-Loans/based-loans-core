@@ -9,6 +9,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const config = CONFIG[hre.network.name];
   const comptroller = await deployments.get('Unitroller');
   const HQLAModel = await deployments.get('HQLAModel');
+  const OAHighJumpModel = await deployments.get('OAHighJumpModel');
 
   // HQLAModel Assets
   const bUSDC = config.marketsConfig.bUSDC;
@@ -34,8 +35,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       ]
     });
   }
-
-
 };
 export default func;
-func.tags = ['ethMarket'];
+func.tags = ['ethMarket', 'alpha'];
