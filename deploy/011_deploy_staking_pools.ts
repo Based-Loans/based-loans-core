@@ -8,8 +8,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts();
   const config = CONFIG[hre.network.name];
 
-  const BLOETHPool = config.marketsConfig.BLOETHPool;
-  const BLOWBTCPool = config.marketsConfig.BLOWBTCPool;
+  const BLOETHPool = config.stakingConfig.BLOETHPool;
+  const BLOWBTCPool = config.stakingConfig.BLOWBTCPool;
 
   const pools = [BLOETHPool, BLOWBTCPool];
 
@@ -53,5 +53,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     }
   }
 };
+
 export default func;
 func.tags = ['staking'];
