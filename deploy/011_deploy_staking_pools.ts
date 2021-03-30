@@ -29,7 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       if (pool.rewardTokenAddress) {
         const poolName = `BasedReward.${pool.name}`;
         const BasedReward = await deploy(poolName, {
-          contract: "BasedReward",
+          contract: "BasedRewards",
           from: deployer,
           log: true,
         });
@@ -47,7 +47,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
           poolName,
           {from: deployer, log: true},
           'initialize',
-          poolConfig
+          ...poolConfig
         );
       }
     }

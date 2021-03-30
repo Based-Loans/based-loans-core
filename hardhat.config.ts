@@ -15,7 +15,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: "https://mainnet.infura.io/v3/" + INFURA_ID,
-        blockNumber: 12134782
+        blockNumber: 11799001
         // url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
         // blockNumber: 8208002,
       }
