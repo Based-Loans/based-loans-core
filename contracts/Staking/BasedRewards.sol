@@ -140,7 +140,7 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
     }
 
     modifier checkStart(){
-        require(block.timestamp > starttime,"not start");
+        require(block.timestamp > starttime, "Not started");
         _;
     }
 
