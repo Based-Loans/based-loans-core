@@ -2,12 +2,11 @@
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
-import "openzeppelin-solidity/contracts/proxy/Initializable.sol";
 import "./IERC20Detailed.sol";
 
 pragma solidity >=0.6.0 <0.8.0;
 
-contract LPTokenWrapper is Initializable {
+contract LPTokenWrapper {
     using SafeMath for uint256;
     using SafeERC20 for IERC20Detailed;
 
@@ -16,7 +15,7 @@ contract LPTokenWrapper is Initializable {
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
 
-    function initialize(address _b) internal initializer {
+    constructor (address _b) internal {
         b = IERC20Detailed(_b);
     }
 

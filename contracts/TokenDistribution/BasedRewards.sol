@@ -18,8 +18,6 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     uint256 public totalRewards = 0;
-    bool public fairDistribution;
-    address public deployer;
 
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
@@ -39,29 +37,17 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
         _;
     }
 
-    modifier onlyDeployer() {
-        require(msg.sender == deployer);
-        _;
-    }
-
-    constructor () public {
-        deployer = msg.sender;
-    }
-
-    function initialize(
+    constructor (
         address _b, // staking token address
         address _blo, // reward token address
         uint256 _duration, // reward duration (endTimestamp - startTimestamp)
         uint256 _initreward, // total reward amount
-        uint256 _starttime, // reward start time
-        bool _fairDistribution // if true, don't allow to stake over 12k
-    ) public onlyDeployer initializer {
-        super.initialize(_b);
+        uint256 _starttime // reward start time
+    ) public LPTokenWrapper(_b) {
         blo = IERC20Detailed(_blo);
 
         duration = _duration;
         starttime = _starttime;
-        fairDistribution = _fairDistribution;
         notifyRewardAmount(_initreward);
     }
 
@@ -92,21 +78,13 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
     }
 
     // stake visibility is public as overriding LPTokenWrapper's stake() function
-    function stake(uint256 amount) public override updateReward(msg.sender) checkStart{
+    function stake(uint256 amount) public override updateReward(msg.sender) checkStart {
         require(amount > 0, "Cannot stake 0");
         super.stake(amount);
         emit Staked(msg.sender, amount);
-
-        if (fairDistribution) {
-            // require amount below 12k for first 24 hours
-            require(
-                balanceOf(msg.sender) <= 12000 * uint(10) ** b.decimals()
-                || block.timestamp >= starttime.add(24*60*60)
-            );
-        }
     }
 
-    function withdraw(uint256 amount) public override updateReward(msg.sender) checkStart{
+    function withdraw(uint256 amount) public override updateReward(msg.sender) checkStart {
         require(amount > 0, "Cannot withdraw 0");
         super.withdraw(amount);
         emit Withdrawn(msg.sender, amount);
@@ -127,18 +105,6 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
         }
     }
 
-    // Not in use
-    modifier checkhalve(){
-        if (block.timestamp >= periodFinish) {
-            initreward = initreward.mul(50).div(100);
-
-            rewardRate = initreward.div(duration);
-            periodFinish = block.timestamp.add(duration);
-            emit RewardAdded(initreward);
-        }
-        _;
-    }
-
     modifier checkStart(){
         require(block.timestamp > starttime, "Not started");
         _;
@@ -149,13 +115,7 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
         override
         updateReward(address(0))
     {
-        if (block.timestamp >= periodFinish) {
-            rewardRate = reward.div(duration);
-        } else {
-            uint256 remaining = periodFinish.sub(block.timestamp);
-            uint256 leftover = remaining.mul(rewardRate);
-            rewardRate = reward.add(leftover).div(duration);
-        }
+        rewardRate = reward.div(duration);
         initreward = reward;
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp.add(duration);
