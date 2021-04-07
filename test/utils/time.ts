@@ -16,3 +16,7 @@ export async function increaseTime(time) {
 export async function setNextBlockTime(time) {
   await ethers.provider.send('evm_setNextBlockTimestamp', [time]);
 }
+
+export async function mineBlock(time) {
+  await ethers.provider.send('evm_mine', [time]);
+}
