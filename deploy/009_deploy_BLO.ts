@@ -28,43 +28,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   } else {
     console.log(`skipping Comptroller._setCompAddress (bloAddress: ${bloAddress})`)
   }
-
-  const comptrollerCompBalance = CONFIG[hre.network.name].comptrollerCompBalance
-  if (comptrollerCompBalance > 0 && (await read('Blo', 'balanceOf', comptroller.address)) == 0) {
-    await execute(
-      'Blo',
-      {from: deployer, log: true},
-      'transfer',
-      comptroller.address,
-      comptrollerCompBalance
-    );
-  } else {
-    console.log(`skipping Blo.transfer to comptroller (comptrollerCompBalance: ${comptrollerCompBalance})`)
-  }
-
-  const compRate = CONFIG[hre.network.name].compRate
-  if (compRate > 0 && (await comptroller.compRate()) != compRate) {
-    let tx = await comptroller._setCompRate(compRate)
-    tx = await tx.wait()
-    console.log(`executing Comptroller._setCompRate (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
-  } else {
-    console.log(`skipping Comptroller._setCompRate (compRate: ${compRate})`)
-  }
-
-  const owner = CONFIG[hre.network.name].accThatGetsAllInitialBLO
-  if (owner != deployer && (await read('Blo', 'balanceOf', comptroller.address)) > 0) {
-    await execute(
-      'Blo',
-      {from: deployer, log: true},
-      'transfer',
-      owner,
-      await read('Blo', 'balanceOf', deployer)
-    );
-  } else {
-    console.log(`skipping Blo.transfer to owner (owner: ${owner}, deployer: ${deployer})`)
-  }
-
-
 };
 export default func;
 func.tags = ['comp'];
