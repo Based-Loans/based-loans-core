@@ -14,8 +14,8 @@ const mainnet = {
   marketsConfig: marketsConfig.mainnet,
   tokenDistribution: tokenDistribution.mainnet,
   compRate: "176000000000000000",
-  comptrollerCompBalance: "10000" + "000000000000000000", // 10k BLO
-  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051"
+  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051",
+  timelockPendingAdminETA: 1612825772
 };
 
 const rinkeby = {
@@ -27,8 +27,8 @@ const rinkeby = {
   marketsConfig: marketsConfig.rinkeby,
   tokenDistribution: tokenDistribution.rinkeby,
   compRate: "176000000000000000",
-  comptrollerCompBalance: "10000" + "000000000000000000", // 10k BLO
-  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051"
+  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051",
+  timelockPendingAdminETA: 1612825772
 };
 
 const mainnet_fork = mainnet;
