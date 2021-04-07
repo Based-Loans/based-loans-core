@@ -15,9 +15,9 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: "https://mainnet.infura.io/v3/" + INFURA_ID,
-        // url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
-        // blockNumber: 8208002
         blockNumber: 11799001
+        // url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
+        // blockNumber: 8208002,
       }
     },
     localhost: {
@@ -59,6 +59,7 @@ const config: HardhatUserConfig = {
     deployer: 0,
     user1: 1,
     liquidator: 2,
+    user2: 3,
     weth_faucet: 9
   },
   gasReporter: {

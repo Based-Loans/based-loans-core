@@ -2,7 +2,7 @@ import {ethers, deployments, getNamedAccounts, network} from 'hardhat';
 const {execute, read} = deployments;
 import {expect} from 'chai';
 import {getEthersContract, impersonateTransferFrom, getErc20Contract} from './utils';
-import {WBTC_ADDRESS, WBTC_WHALE, USDC_ADDRESS, USDC_WHALE} from './constants';
+import {WBTC_ADDRESS, WBTC_WHALE, USDC_ADDRESS, USDC_WHALE} from './utils';
 import UniswapV2Router02 from './abi/UniswapV2Router02.json';
 
 
@@ -28,7 +28,7 @@ describe('CErc20Immutable', function () {
 
     wbtc = await getErc20Contract(user1, WBTC_ADDRESS);
     usdc = await getErc20Contract(user1, USDC_ADDRESS);
-    // await deployments.fixture();
+    await deployments.fixture();
     bWBTC = await getEthersContract('CErc20Immutable.bWBTC', user1);
     bUSDC = await getEthersContract('CErc20Immutable.bUSDC', user1);
 
@@ -157,7 +157,7 @@ describe('CErc20Immutable', function () {
           expect(await bWBTC.balanceOf(user1)).to.be.equal(0);
         });
 
-        it.only('liquidateBorrow()', async function () {
+        it('liquidateBorrow()', async function () {
           // get WBTC collateral
           const WBTCBal = await bWBTC.callStatic.balanceOfUnderlying(user1, {gasLimit: 500000});
           // get BTC price

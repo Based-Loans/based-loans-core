@@ -3,6 +3,7 @@
 const ethers = require('ethers');
 const marketsConfig = require('./marketsConfig');
 const modelsConfig = require('./modelsConfig');
+const tokenDistribution = require('./tokenDistribution');
 
 const mainnet = {
   anchorPeriod: 900, // 15 min
@@ -11,6 +12,7 @@ const mainnet = {
   liquidationIncentiveMantissa: '1250000000000000000',
   modelsConfig: modelsConfig.mainnet,
   marketsConfig: marketsConfig.mainnet,
+  tokenDistribution: tokenDistribution.mainnet,
   compRate: "176000000000000000",
   comptrollerCompBalance: "10000" + "000000000000000000", // 10k BLO
   accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051"
@@ -23,6 +25,7 @@ const rinkeby = {
   liquidationIncentiveMantissa: '1250000000000000000',
   modelsConfig: modelsConfig.rinkeby,
   marketsConfig: marketsConfig.rinkeby,
+  tokenDistribution: tokenDistribution.rinkeby,
   compRate: "176000000000000000",
   comptrollerCompBalance: "10000" + "000000000000000000", // 10k BLO
   accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051"
