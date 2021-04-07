@@ -107,4 +107,6 @@ describe('UniswapAnchoredView', function () {
     expect(tokenConfig.uniswapMarket).to.be.equal(bTokenConfig.tokenConfig.uniswapMarket);
     expect(tokenConfig.priceSource).to.be.equal(bTokenConfig.tokenConfig.priceSource);
   })
+
+  it('move price on uniswap and confirm new price on oracle');
 });

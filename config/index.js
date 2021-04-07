@@ -6,7 +6,7 @@ const modelsConfig = require('./modelsConfig');
 const tokenDistribution = require('./tokenDistribution');
 
 const mainnet = {
-  anchorPeriod: 1800,
+  anchorPeriod: 900, // 15 min
   closeFactorMantissa: '900000000000000000',
   maxAssets: '50',
   liquidationIncentiveMantissa: '1250000000000000000',
@@ -19,7 +19,7 @@ const mainnet = {
 };
 
 const rinkeby = {
-  anchorPeriod: 1800,
+  anchorPeriod: 900, // 15 min
   closeFactorMantissa: '900000000000000000',
   maxAssets: '50',
   liquidationIncentiveMantissa: '1250000000000000000',
