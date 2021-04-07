@@ -45,7 +45,7 @@ describe("BasedRewards", function () {
       await deployments.fixture();
       basedRewardsMbBased = await getEthersContract('BasedRewards.mbBased', user1);
       basedRewardsComp = await getEthersContract('BasedRewards.comp', user1);
-      blo = await getEthersContract('Comp', deployer);
+      blo = await getEthersContract('Blo', deployer);
       // send reward token to the pools
       await impersonateTransferFrom(
         blo.address,
