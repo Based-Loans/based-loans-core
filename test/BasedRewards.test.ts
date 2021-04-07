@@ -280,6 +280,8 @@ describe("BasedRewards", function () {
         expect(await blo.balanceOf(basedRewardsMbBased.address)).to.be.equal(
           rewardAmount.sub(startGetRewardsUser1).sub(halfwayGetRewardsUser1).sub(endGetRewardsUser1)
         );
+        await expect(basedRewardsMbBased.connect(user1Signer).withdraw(mintAmountMbBased))
+          .to.emit(basedRewardsMbBased, 'Withdrawn').withArgs(user1, mintAmountMbBased);
 
         // user 2
         balance = await basedRewardsMbBased.balanceOf(user2);
