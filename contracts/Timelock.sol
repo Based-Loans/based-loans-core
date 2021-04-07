@@ -33,14 +33,6 @@ contract Timelock {
         delay = delay_;
     }
 
-    function initPendingAdmin(address pendingAdmin_) public {
-        require(msg.sender == admin, "Timelock::initPendingAdmin: Call must come from admin.");
-        require(pendingAdmin == address(0), "Timelock::initPendingAdmin: pendingAdmin must not be set");
-        pendingAdmin = pendingAdmin_;
-
-        emit NewPendingAdmin(pendingAdmin);
-    }
-
     fallback() external payable { }
 
     function setDelay(uint delay_) public {
