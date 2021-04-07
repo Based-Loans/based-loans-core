@@ -28,7 +28,7 @@ describe('CErc20Immutable', function () {
 
     wbtc = await getErc20Contract(user1, WBTC_ADDRESS);
     usdc = await getErc20Contract(user1, USDC_ADDRESS);
-    await deployments.fixture();
+    // await deployments.fixture();
     bWBTC = await getEthersContract('CErc20Immutable.bWBTC', user1);
     bUSDC = await getEthersContract('CErc20Immutable.bUSDC', user1);
 
@@ -157,7 +157,7 @@ describe('CErc20Immutable', function () {
           expect(await bWBTC.balanceOf(user1)).to.be.equal(0);
         });
 
-        it('liquidateBorrow()', async function () {
+        it.only('liquidateBorrow()', async function () {
           // get WBTC collateral
           const WBTCBal = await bWBTC.callStatic.balanceOfUnderlying(user1, {gasLimit: 500000});
           // get BTC price
@@ -171,6 +171,9 @@ describe('CErc20Immutable', function () {
           const dollarValueBorrowUSDC = borrowBalance.mul(100);
           // expect WBTC collateral * collateralFactor >= USDC borrow amount
           expect(dollarValueCollateralWBTC).to.be.above(dollarValueBorrowUSDC);
+
+          // secure an amount for liquidiator
+          await impersonateTransferFrom(wbtc.address, WBTC_WHALE, liquidator, mintAmountWBTC);
 
           // get WBTC
           const wbtcWhales = [
@@ -194,7 +197,7 @@ describe('CErc20Immutable', function () {
 
           // drop WBTC price
           await wbtc.approve(uniswapRouter.address, await wbtc.balanceOf(user1))
-          const tx = await uniswapRouter.swapExactTokensForTokens(
+          await uniswapRouter.swapExactTokensForTokens(
             await wbtc.balanceOf(user1),
             1,
             [wbtc.address, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'],
@@ -204,9 +207,10 @@ describe('CErc20Immutable', function () {
           expect(await wbtc.balanceOf(user1)).to.be.equal(0);
 
           expect(await oracle.price('WBTC')).to.be.equal('37657764783');
-          await network.provider.send("evm_increaseTime", [3600])
+          // time travel forward 15 min
+          await network.provider.send("evm_increaseTime", [15*60])
           await oracle.getUnderlyingPrice(bWBTC.address, {gasLimit: 500000});
-          expect(await oracle.price('WBTC')).to.be.below('18599000000');
+          expect(await oracle.price('WBTC')).to.be.below('19099000000');
 
           // get WBTC collateral
           const WBTCBalAfter = await bWBTC.callStatic.balanceOfUnderlying(user1, {gasLimit: 500000});
@@ -222,7 +226,25 @@ describe('CErc20Immutable', function () {
           expect(dollarValueCollateralWBTCAfter).to.be.below(dollarValueBorrowUSDCAfter);
 
           // TODO: liquidateBorrow
-
+          expect(await wbtc.balanceOf(liquidator)).to.be.equal(mintAmountWBTC);
+          const liquidatorSigner = ethers.provider.getSigner(liquidator);
+          await wbtc.connect(liquidatorSigner).approve(bWBTC.address, mintAmountWBTC);
+          let tx = await bWBTC.connect(liquidatorSigner).liquidateBorrow(user1, mintAmountWBTC, bUSDC.address);
+          const all = await deployments.all();
+          for (const [key, value] of Object.entries(all)) {
+            console.log(`${key}: ${value.address}`);
+          }
+          console.log();
+          console.log(tx)
+          // await expect(
+          //   bWBTC.connect(liquidatorSigner).liquidateBorrow(user1, mintAmountWBTC, bUSDC.address)
+          // ).to.emit(bWBTC, 'LiquidateBorrow').withArgs(
+          //   liquidator,
+          //   user1,
+          //   mintAmountWBTC,
+          //   bUSDC.address,
+          //   1
+          // )
         });
       })
     })
