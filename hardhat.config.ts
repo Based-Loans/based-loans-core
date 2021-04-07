@@ -57,7 +57,8 @@ const config: HardhatUserConfig = {
   },
   namedAccounts: {
     deployer: 0,
-    trader: 1,
+    user1: 1,
+    liquidator: 2,
     weth_faucet: 9
   },
   gasReporter: {
