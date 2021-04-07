@@ -12,7 +12,7 @@ const mainnet = {
   liquidationIncentiveMantissa: '1250000000000000000',
   modelsConfig: modelsConfig.mainnet,
   marketsConfig: marketsConfig.mainnet,
-  stakingConfig: stakingConfig.rinkeby,
+  stakingConfig: stakingConfig.mainnet,
   compRate: "176000000000000000",
   comptrollerCompBalance: "10000" + "000000000000000000", // 10k BLO
   accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051"
