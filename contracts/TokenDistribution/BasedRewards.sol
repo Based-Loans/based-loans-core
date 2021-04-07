@@ -52,7 +52,10 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
     }
 
     function lastTimeRewardApplicable() public view returns (uint256) {
-        return Math.min(block.timestamp, periodFinish);
+        if (block.timestamp > starttime) {
+            return Math.min(block.timestamp, periodFinish);
+        }
+        return starttime;
     }
 
     function rewardPerToken() public view returns (uint256) {
@@ -78,13 +81,13 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
     }
 
     // stake visibility is public as overriding LPTokenWrapper's stake() function
-    function stake(uint256 amount) public override updateReward(msg.sender) checkStart {
+    function stake(uint256 amount) public override updateReward(msg.sender) {
         require(amount > 0, "Cannot stake 0");
         super.stake(amount);
         emit Staked(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount) public override updateReward(msg.sender) checkStart {
+    function withdraw(uint256 amount) public override updateReward(msg.sender) {
         require(amount > 0, "Cannot withdraw 0");
         super.withdraw(amount);
         emit Withdrawn(msg.sender, amount);
@@ -95,7 +98,7 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
         getReward();
     }
 
-    function getReward() public updateReward(msg.sender) checkStart{
+    function getReward() public updateReward(msg.sender) checkStart {
         uint256 reward = earned(msg.sender);
         if (reward > 0) {
             rewards[msg.sender] = 0;
@@ -117,8 +120,8 @@ contract BasedRewards is LPTokenWrapper, IRewardDistributionRecipient {
     {
         rewardRate = reward.div(duration);
         initreward = reward;
-        lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp.add(duration);
+        lastUpdateTime = starttime;
+        periodFinish = starttime.add(duration);
         emit RewardAdded(reward);
     }
 }
