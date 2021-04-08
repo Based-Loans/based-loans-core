@@ -3,7 +3,7 @@
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
-contract Comp {
+contract Blo {
     /// @notice EIP-20 token name for this token
     string public constant name = "Based Loans Ownership";
 
