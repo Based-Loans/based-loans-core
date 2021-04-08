@@ -46,12 +46,6 @@ describe("BasedRewards", function () {
       basedRewardsMbBased = await getEthersContract('BasedRewards.mbBased', user1);
       basedRewardsComp = await getEthersContract('BasedRewards.comp', user1);
       blo = await getEthersContract('Blo', deployer);
-      // send reward token to the pools
-      await impersonateTransferFrom(
-        blo.address,
-        CONFIG[network.name].accThatGetsAllInitialBLO,
-        deployer,
-        await blo.balanceOf(CONFIG[network.name].accThatGetsAllInitialBLO));
       await blo.transfer(basedRewardsMbBased.address, mbBasedPoolConfig.rewardAmount);
       await blo.transfer(basedRewardsComp.address, compPoolConfig.rewardAmount);
 
