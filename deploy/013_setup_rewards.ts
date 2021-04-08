@@ -25,7 +25,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const compRate = CONFIG[hre.network.name].compRate
   if (compRate > 0 && (await comptroller.compRate()) != compRate) {
-    let tx = await comptroller._setCompRate(compRate, {gasLimit: 500000})
+    let tx = await comptroller._setCompRate(compRate, {gasLimit: 700000})
     tx = await tx.wait()
     console.log(`executing Comptroller._setCompRate (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
   } else {
@@ -48,7 +48,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 
   if (marketsToBlo.length > 0) {
-    let tx = await comptroller._addCompMarkets(marketsToBlo)
+    let tx = await comptroller._addCompMarkets(marketsToBlo, {gasLimit: 800000})
     tx = await tx.wait()
     console.log(`executing Comptroller._addCompMarkets (tx: ${tx.transactionHash}) ... markets ${marketsToBlo}: performed with ${tx.gasUsed.toString()} gas`)
   } else {

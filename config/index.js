@@ -27,7 +27,7 @@ const rinkeby = {
   marketsConfig: marketsConfig.rinkeby,
   tokenDistribution: tokenDistribution.rinkeby,
   compRate: "176000000000000000",
-  timelockPendingAdminETA: 1618106846, // now + 3 days + 10 min
+  timelockPendingAdminETA: 1618109846, // now + 3 days + 10 min
   timelockDelay: 60 * 60 * 24 * 3 // 3 days
 };
 
