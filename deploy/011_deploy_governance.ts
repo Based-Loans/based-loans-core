@@ -36,7 +36,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       if(!(await read('Timelock', 'queuedTransactions', txHash))) {
         await execute(
           'Timelock',
-          {from: deployer, log: true},
+          {from: deployer, log: true, gasLimit: 700000},
           'queueTransaction',
           timelock.address,
           0,
@@ -52,7 +52,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         if (block.timestamp >= config.timelockPendingAdminETA) {
           await execute(
             'Timelock',
-            {from: deployer, log: true},
+            {from: deployer, log: true, gasLimit: 100000},
             'executeTransaction',
             timelock.address,
             0,

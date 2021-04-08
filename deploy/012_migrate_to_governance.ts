@@ -7,17 +7,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const comptroller = new hre.ethers.Contract(
-    (await deployments.get('Unitroller')).address,
-    (await deployments.get('Comptroller')).abi,
-    await hre.ethers.provider.getSigner(deployer)
-  );
-
-  await deploy("Blo", {
-    from: deployer,
-    log: true,
-    args: [deployer]
-  })
+  // update admin on Unitroller
+  // update admin on all markets
+  // update admin on all models
 };
 export default func;
-func.tags = ['blo'];
+func.tags = ['migrate_to_gov']

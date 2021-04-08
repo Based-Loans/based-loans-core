@@ -14,7 +14,6 @@ const mainnet = {
   marketsConfig: marketsConfig.mainnet,
   tokenDistribution: tokenDistribution.mainnet,
   compRate: "176000000000000000",
-  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051",
   timelockPendingAdminETA: 1612825772,
   timelockDelay: 60 * 60 * 24 * 3 // 3 days
 };
@@ -28,8 +27,7 @@ const rinkeby = {
   marketsConfig: marketsConfig.rinkeby,
   tokenDistribution: tokenDistribution.rinkeby,
   compRate: "176000000000000000",
-  accThatGetsAllInitialBLO: "0x966da064E49F63D84d636D5a694038D831c75051",
-  timelockPendingAdminETA: 1612825772,
+  timelockPendingAdminETA: 1618149846, // now + 3 days + 10 min
   timelockDelay: 60 * 60 * 24 * 3 // 3 days
 };
 
