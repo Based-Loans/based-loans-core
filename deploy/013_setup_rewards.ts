@@ -25,7 +25,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const compRate = CONFIG[hre.network.name].compRate
   if (compRate > 0 && (await comptroller.compRate()) != compRate) {
-    let tx = await comptroller._setCompRate(compRate)
+    let tx = await comptroller._setCompRate(compRate, {gasLimit: 500000})
     tx = await tx.wait()
     console.log(`executing Comptroller._setCompRate (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
   } else {
