@@ -18,16 +18,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     log: true,
     args: [deployer]
   })
-
-  const bloAddress = (await deployments.get('Blo')).address
-
-  if((await comptroller.getCompAddress()) != bloAddress) {
-    let tx = await comptroller._setCompAddress(bloAddress)
-    tx = await tx.wait()
-    console.log(`executing Comptroller._setCompAddress (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
-  } else {
-    console.log(`skipping Comptroller._setCompAddress (bloAddress: ${bloAddress})`)
-  }
 };
 export default func;
 func.tags = ['blo'];
