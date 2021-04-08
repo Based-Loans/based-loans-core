@@ -9,11 +9,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const config = CONFIG[hre.network.name];
   const ethers = hre.ethers;
 
-  const threeDays = 60 * 60 * 24 * 3;
   const timelock = await deploy("Timelock", {
     from: deployer,
     log: true,
-    args: [deployer, threeDays]
+    args: [deployer, config.timelockDelay]
   });
 
   const governorAlpha = await deploy("GovernorAlpha", {
@@ -30,7 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       const txHash = ethers.utils.keccak256(
         ethers.utils.defaultAbiCoder.encode(
           [ 'address', 'uint256', 'string', 'bytes', 'uint256' ],
-          [ timelock.address, 0, 'setPendingAdmin(address)', data, config.timelockPendingAdminETA ]
+          [ timelock.address, 0, '', data, config.timelockPendingAdminETA ]
         )
       )
 
@@ -41,7 +40,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
           'queueTransaction',
           timelock.address,
           0,
-          'setPendingAdmin(address)',
+          '',
           data,
           config.timelockPendingAdminETA
         );
@@ -57,7 +56,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
             'executeTransaction',
             timelock.address,
             0,
-            'setPendingAdmin(address)',
+            '',
             data,
             config.timelockPendingAdminETA
           );
@@ -83,10 +82,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     console.log(`skipping Timelock.setPendingAdmin() (admin: ${(await read('Timelock', 'admin'))})`)
     console.log(`skipping GovernorAlpha.__acceptAdmin()`)
   }
-
-  // update admin on Unitroller
-  // update admin on all markets
-  // update admin on all models
 };
 export default func;
 func.tags = ['gov']
