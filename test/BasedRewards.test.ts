@@ -42,7 +42,7 @@ describe("BasedRewards", function () {
     })
 
     beforeEach(async () => {
-      await deployments.fixture();
+      await deployments.fixture(['token_distro']);
       basedRewardsMbBased = await getEthersContract('BasedRewards.mbBased', user1);
       basedRewardsComp = await getEthersContract('BasedRewards.comp', user1);
       blo = await getEthersContract('Blo', deployer);

@@ -11,7 +11,7 @@ describe('Unitroller', function () {
     const namedAccounts = await getNamedAccounts();
     deployer = namedAccounts.deployer;
 
-    await deployments.fixture();
+    await deployments.fixture(['app']);
     unitroller = await deployments.get('Unitroller');
   });
 
