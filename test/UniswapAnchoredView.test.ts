@@ -13,7 +13,7 @@ describe('UniswapAnchoredView', function () {
     const namedAccounts = await getNamedAccounts();
     deployer = namedAccounts.deployer;
 
-    await deployments.fixture();
+    await deployments.fixture(['app']);
     uniswapAnchoredView = await deployments.get('UniswapAnchoredView');
     Unitroller = await deployments.get('Unitroller');
     OAHighJumpModel = await deployments.get('OAHighJumpModel');

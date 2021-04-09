@@ -13,7 +13,7 @@ describe('GovernorAlpha', function () {
     deployer = namedAccounts.deployer;
     config = CONFIG[network.name];
 
-    await deployments.fixture();
+    await deployments.fixture(['blo', 'gov']);
   })
 
   it('should deploy Timelock and GovernorAlpha and queueTransaction', async function () {

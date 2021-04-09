@@ -28,7 +28,7 @@ describe('CErc20Immutable', function () {
 
     wbtc = await getErc20Contract(user1, WBTC_ADDRESS);
     usdc = await getErc20Contract(user1, USDC_ADDRESS);
-    await deployments.fixture();
+    await deployments.fixture(['app']);
     bWBTC = await getEthersContract('CErc20Immutable.bWBTC', user1);
     bUSDC = await getEthersContract('CErc20Immutable.bUSDC', user1);
 
