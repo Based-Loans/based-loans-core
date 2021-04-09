@@ -7,13 +7,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const comptroller = new hre.ethers.Contract(
-    (await deployments.get('Unitroller')).address,
-    (await deployments.get('Comptroller')).abi,
-    await hre.ethers.provider.getSigner(deployer)
-  );
-
-  await deploy("Blo", {
+  const blo = await deploy("Blo", {
     from: deployer,
     log: true,
     args: [deployer]
