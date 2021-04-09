@@ -48,4 +48,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 };
 export default func;
-func.tags = ['comptrollerConfig', 'alpha'];
+func.tags = ['comptrollerConfig', 'app'];

@@ -13,3 +13,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 };
 export default func;
 func.tags = ['migrate_to_gov']
+func.dependencies = ['app', 'gov']

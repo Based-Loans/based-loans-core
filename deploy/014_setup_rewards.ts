@@ -35,7 +35,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const bETH = await deployments.get('CEther');
   const bUSDC = await deployments.get('CErc20Immutable.bUSDC');
   const bWBTC = await deployments.get('CErc20Immutable.bWBTC');
-  const bloMarkets = [bETH.address, bUSDC.address, bWBTC.address];
+  const bBLO = await deployments.get('CErc20Immutable.bBLO');
+  const bloMarkets = [bETH.address, bUSDC.address, bWBTC.address, bBLO.address];
   let marketsToBlo = [];
 
   for (let index = 0; index < bloMarkets.length; index++) {
@@ -56,4 +57,5 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 };
 export default func;
-func.tags = ['gov']
+func.tags = ['rewards']
+func.dependencies = ['app', 'blo']

@@ -42,6 +42,32 @@ const bETHRinkeby = {
   borrowCaps: '0'
 }
 
+const bBLO = {
+  tokenConfig: {
+    cToken: '#',
+    underlying: "#",
+    symbolHash: '0x009696ff259d96a610b5ca16016fbc7bd6940a633aab23ae0b36ee6a7ad4a98b',
+    baseUnit: '1000000000000000000',
+    priceSource: 2,
+    fixedPrice: 0,
+    uniswapMarket: '#',
+    isUniswapReversed: false
+  },
+  initialExchangeRateMantissa: '200000000000000000000000000',
+  name: 'Based Loans BLO',
+  symbol: 'bBLO',
+  decimals: '18',
+  reserveFactorMantissa: '0',
+  collateralFactorMantissa: '0',
+  borrowCaps: '0',
+  weth: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+}
+
+const bBLORinkeby = {
+  ...bBLO,
+  weth: '0xc778417e063141139fce010982780140aa0cd5ab'
+}
+
 const bUSDC = {
   tokenConfig: {
     cToken: '#',
@@ -463,6 +489,6 @@ const bFRAX = {
 }
 
 module.exports = {
-  "mainnet": {bETH, bUSDC, bUSDT, bDAI, bWBTC, bDPI, bCORE, bFARM, bESD, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX},
-  "rinkeby": {"bETH": bETHRinkeby, "bUSDC": bUSDCRinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bDPI, bCORE, bFARM, "bESD": bESDRinkeby, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX}
+  "mainnet": {bETH, bUSDC, bUSDT, bDAI, bWBTC, bBLO, bDPI, bCORE, bFARM, bESD, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX},
+  "rinkeby": {"bETH": bETHRinkeby, "bUSDC": bUSDCRinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bBLO: bBLORinkeby, bDPI, bCORE, bFARM, "bESD": bESDRinkeby, bRSR, bPICKLE, bHEX, bCVP, bAUDIO, bHEGIC, bDHT, bBAC, bBAS, bFRAX}
 };

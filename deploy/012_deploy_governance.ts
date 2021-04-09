@@ -34,6 +34,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       )
 
       if(!(await read('Timelock', 'queuedTransactions', txHash))) {
+        console.log('### WARNING ###');
+        console.log('>>> make sure timelockPendingAdminETA has correct value <<<');
+        console.log('### WARNING ###');
         await execute(
           'Timelock',
           {from: deployer, log: true, gasLimit: 700000},

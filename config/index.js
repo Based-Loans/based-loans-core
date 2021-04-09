@@ -27,8 +27,8 @@ const rinkeby = {
   marketsConfig: marketsConfig.rinkeby,
   tokenDistribution: tokenDistribution.rinkeby,
   compRate: "176000000000000000",
-  timelockPendingAdminETA: 1618149846, // now + 3 days + 10 min
-  timelockDelay: 60 * 60 * 24 * 3 // 3 days
+  timelockPendingAdminETA: 1618106511,
+  timelockDelay: 60 * 60 * 24 * 2
 };
 
 const mainnet_fork = mainnet;
