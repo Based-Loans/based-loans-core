@@ -12,6 +12,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   for ([name, pool] of Object.entries(CONFIG[hre.network.name].tokenDistribution)) {
     await deploy("BasedRewards." + name, {
       contract: "BasedRewards",
+      gasLimit: 2000000,
       from: deployer,
       log: true,
       args: [
@@ -23,6 +24,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       ]
     });
   }
+  console.log('### WARNING ###');
+  console.log('>>> fund pools with BLO manually <<<');
+  console.log('### WARNING ###');
 };
 export default func;
-func.tags = ['distribution']
+func.tags = ['token_distro']
+func.dependencies = ['blo']
