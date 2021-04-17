@@ -90,6 +90,9 @@ describe("BasedRewards", function () {
 
     describe('stake', () => {
       it('should allow staking before starting time', async () => {
+        const starttime = await basedRewardsMbBased.starttime();
+        await mineBlock(starttime.sub(1000).toNumber());
+
         expect(await mbbased.balanceOf(user1)).to.be.equal(mintAmountMbBased);
         expect(await mbbased.allowance(user1, basedRewardsMbBased.address)).to.be.equal(mintAmountMbBased);
 
@@ -99,6 +102,13 @@ describe("BasedRewards", function () {
         expect(await basedRewardsMbBased.totalRewards()).to.be.equal(0);
         expect(await basedRewardsMbBased.earned(user1)).to.be.equal(0);
         expect(await basedRewardsMbBased.balanceOf(user1)).to.be.equal(mintAmountMbBased);
+
+        await mineBlock(starttime.sub(500).toNumber());
+        expect(await basedRewardsMbBased.earned(user1)).to.be.equal(0);
+        await mineBlock(starttime.sub(100).toNumber());
+        expect(await basedRewardsMbBased.earned(user1)).to.be.equal(0);
+        await mineBlock(starttime.add(100).toNumber());
+        expect(await basedRewardsMbBased.earned(user1)).to.not.equal(0);
       });
 
       it('should now allow staking zero amount', async () => {
