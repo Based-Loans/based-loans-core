@@ -2,9 +2,11 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { DeployFunction } from 'hardhat-deploy/types';
 import * as CONFIG from '../config';
 
-import { FACTORY_ADDRESS, INIT_CODE_HASH } from '@uniswap/sdk'
+import { FACTORY_ADDRESS, INIT_CODE_HASH, MINIMUM_LIQUIDITY } from '@uniswap/sdk'
 import { pack, keccak256 } from '@ethersproject/solidity'
 import { getCreate2Address } from '@ethersproject/address'
+import UniswapV2Factory from '../test/abi/UniswapV2Factory.json';
+import UniswapV2Router02 from '../test/abi/UniswapV2Router02.json';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre;
@@ -20,12 +22,55 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await hre.ethers.provider.getSigner(deployer)
   );
 
-  console.log('### WARNING ###');
-  console.log('>>> create a uniswap pair for BLO<>ETH manually <<<');
-  console.log('>>> you have 10 sec to cancel this script if you did NOT create a pair <<<');
-  console.log('### WARNING ###');
+  let uniswapFactory = new ethers.Contract(
+    FACTORY_ADDRESS,
+    UniswapV2Factory,
+    await ethers.provider.getSigner(deployer)
+  );
 
-  await new Promise(r => setTimeout(r, 10000));
+  let WETH;
+  if (hre.network.name == 'rinkeby') {
+    WETH = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
+  } else {
+    WETH = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+  }
+
+  const bloAddress = (await deployments.get('Blo')).address;
+  const pair = await uniswapFactory.getPair(WETH, bloAddress);
+  if (pair == ethers.constants.AddressZero) {
+    console.log(`executing uniswapFactory.createPair (pair[]: ${WETH}, ${bloAddress})`)
+    let tx = await uniswapFactory.createPair(WETH, bloAddress);
+    await tx.wait();
+
+    const uniswapRouter = new ethers.Contract(
+      '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+      UniswapV2Router02,
+      await ethers.provider.getSigner(deployer)
+    );
+
+    await execute(
+      'Blo',
+      {from: deployer, log: true},
+      'approve',
+      uniswapRouter.address,
+      ethers.constants.WeiPerEther
+    );
+
+    const ethAmount = ethers.constants.WeiPerEther.div(1000);
+    console.log(`executing uniswapRouter.addLiquidityETH (args: ${bloAddress}, ${ethers.constants.WeiPerEther}, ${ethers.constants.WeiPerEther}, ${ethAmount}, ${deployer}, 1912825772)`)
+    tx = await uniswapRouter.addLiquidityETH(
+      bloAddress,
+      ethers.constants.WeiPerEther,
+      ethers.constants.WeiPerEther,
+      ethAmount,
+      deployer,
+      1912825772,
+      {value: ethAmount}
+    );
+    await tx.wait();
+  } else {
+    console.log(`skipping uniswapFactory.createPair (pair exists: ${pair})`)
+  }
 
   // Setup BLO market
   const OADefaultModel = await deployments.get('OADefaultModel');
