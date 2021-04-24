@@ -143,8 +143,8 @@ contract CEther is CToken {
     }
 
     function doTransferOut(address payable to, uint amount) internal override {
-        /* Send the Ether, with minimal gas and revert on failure */
-        to.transfer(amount);
+        (bool success, ) = to.call.value(amount)("");
+        require(success, "doTransferOut failed");
     }
 
     function requireNoError(uint errCode, string memory message) internal pure {
