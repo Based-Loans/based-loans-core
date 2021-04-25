@@ -1,9 +1,12 @@
 import {ethers, deployments, getNamedAccounts, network} from 'hardhat';
 const {execute, read} = deployments;
 import {expect} from 'chai';
-import {getEthersContract, impersonateTransferFrom, getErc20Contract} from './utils';
+import {getEthersContract, impersonateTransferFrom, getErc20Contract,
+  getCurrentTime, mineBlock} from './utils';
 import {WBTC_ADDRESS, WBTC_WHALE, USDC_ADDRESS, USDC_WHALE} from './utils';
 import UniswapV2Router02 from './abi/UniswapV2Router02.json';
+import UniswapV2Factory from './abi/UniswapV2Factory.json';
+import { FACTORY_ADDRESS, INIT_CODE_HASH } from '@uniswap/sdk'
 
 
 describe('CErc20Immutable', function () {
@@ -28,7 +31,8 @@ describe('CErc20Immutable', function () {
 
     wbtc = await getErc20Contract(user1, WBTC_ADDRESS);
     usdc = await getErc20Contract(user1, USDC_ADDRESS);
-    await deployments.fixture(['app']);
+    await deployments.fixture(['protocol', 'blo', 'rewards', 'ethMarket', 'bMarkets']);
+
     bWBTC = await getEthersContract('CErc20Immutable.bWBTC', user1);
     bUSDC = await getEthersContract('CErc20Immutable.bUSDC', user1);
 
@@ -75,6 +79,7 @@ describe('CErc20Immutable', function () {
       await usdc.connect(deployerSigner).approve(bUSDC.address, USDCMarketLiquidity);
       // call mint
       await bUSDC.connect(deployerSigner).mint(USDCMarketLiquidity);
+      await comptroller.connect(deployerSigner).enterMarkets([bUSDC.address]);
     });
 
     it('getCash()', async function () {
@@ -83,11 +88,14 @@ describe('CErc20Immutable', function () {
 
     describe('with WBTC deposit', async function () {
       const mintAmountWBTC = ethers.utils.parseUnits('1', 8);
+      let mintBlock;
 
       beforeEach('deposit WBTC', async function () {
         await impersonateTransferFrom(wbtc.address, WBTC_WHALE, user1, mintAmountWBTC);
         await wbtc.approve(bWBTC.address, mintAmountWBTC);
-        await bWBTC.mint(mintAmountWBTC);
+        let tx = await bWBTC.mint(mintAmountWBTC);
+        tx = await tx.wait();
+        mintBlock = tx.blockNumber;
       })
 
       it('fails to borrow() USDC if not enterMarket()', async function () {
@@ -132,12 +140,109 @@ describe('CErc20Immutable', function () {
       });
 
       describe('with WBTC deposit and USDC borrowed', async function () {
+        let startingBlockNumber;
         const borrowAmountUSDC = ethers.utils.parseUnits('10000', 6);
 
         beforeEach('enterMarket() with WBTC & borrow() USDC', async function () {
           await comptroller.enterMarkets([bWBTC.address]);
-          await bUSDC.borrow(borrowAmountUSDC);
+          let tx = await bUSDC.borrow(borrowAmountUSDC);
+          tx = await tx.wait()
+          startingBlockNumber = tx.blockNumber;
         })
+
+        describe('rewards', async function () {
+
+          beforeEach(async function () {
+            await comptroller.refreshCompSpeeds();
+          })
+
+          it('should have compSpeeds', async function () {
+            expect(await read('Blo', 'balanceOf', comptroller.address)).to.be.equal(0);
+            expect(await comptroller.compRate()).to.not.equal(0);
+            expect(await comptroller.compSpeeds(bUSDC.address)).to.be.equal(await comptroller.compRate());
+            expect(await comptroller.compSpeeds(bWBTC.address)).to.be.equal(0);
+          })
+
+          it('should earn BLO rewards', async function () {
+            expect(await read('Blo', 'balanceOf', user1)).to.be.equal(0);
+            expect(await read('Blo', 'balanceOf', deployer)).to.be.equal(ethers.utils.parseUnits('100000000', 18));
+
+            await comptroller['claimComp(address)'](user1);
+            await comptroller['claimComp(address)'](deployer);
+
+            let blockNumber = await ethers.provider.getBlockNumber();
+            let compAccrued = await comptroller.compAccrued(user1);
+            const compRate = await comptroller.compRate();
+            expect(compAccrued).to.be.equal(compRate.mul(blockNumber - startingBlockNumber - 2).sub(1));
+            expect(await read('Blo', 'balanceOf', user1)).to.be.equal(0);
+
+            compAccrued = await comptroller.compAccrued(deployer);
+            const deployerCompAccured = compRate.mul(blockNumber - startingBlockNumber - 1);
+            expect(compAccrued).to.be.equal(deployerCompAccured);
+
+            await bUSDC.borrow(ethers.utils.parseUnits('1', '6'));
+
+            compAccrued = await comptroller.compAccrued(user1);
+            blockNumber = await ethers.provider.getBlockNumber();
+            expect(compAccrued).to.be.equal(compRate.mul(blockNumber - startingBlockNumber - 1).sub(2));
+            compAccrued = await comptroller.compAccrued(deployer);
+            expect(compAccrued).to.be.equal(deployerCompAccured);
+            expect(await read('Blo', 'balanceOf', deployer)).to.be.equal(ethers.utils.parseUnits('100000000', 18));
+          })
+
+          describe('with BLO available', async function () {
+            let refreshBlock;
+
+            beforeEach('send BLO token', async function () {
+              // send BLO for rewards
+              await execute(
+                'Blo',
+                {from: deployer, log: false},
+                'transfer',
+                (await deployments.get('Unitroller')).address,
+                ethers.utils.parseUnits('1000', 18)
+              );
+              let tx = await comptroller.refreshCompSpeeds();
+              tx = await tx.wait();
+              refreshBlock = tx.blockNumber;
+            })
+
+            it('should collect BLO rewards', async function () {
+              expect(await read('Blo', 'balanceOf', user1)).to.be.equal(0);
+              const deployerBloBal = ethers.utils.parseUnits('99999000', 18);
+              expect(await read('Blo', 'balanceOf', deployer)).to.be.equal(deployerBloBal);
+
+              let user1Tx = await comptroller['claimComp(address)'](user1);
+              let deployerTx = await comptroller['claimComp(address)'](deployer);
+
+              let blockNumber = await ethers.provider.getBlockNumber();
+              let compAccrued = await comptroller.compAccrued(user1);
+              const compRate = await comptroller.compRate();
+              expect(compAccrued).to.be.equal(0);
+              const user1BloBal = compRate.mul(user1Tx.blockNumber - startingBlockNumber - 1).sub(1);
+              expect(await read('Blo', 'balanceOf', user1)).to.be.equal(user1BloBal);
+
+              compAccrued = await comptroller.compAccrued(deployer);
+              expect(compAccrued).to.be.equal(0);
+              const deployerCompAccured = compRate.mul(blockNumber - startingBlockNumber - 1);
+              expect(await read('Blo', 'balanceOf', deployer))
+                .to.be.equal(deployerBloBal.add(deployerCompAccured));
+
+              await bUSDC.borrow(ethers.utils.parseUnits('1', '6'));
+
+              compAccrued = await comptroller.compAccrued(user1);
+              let blockDelta = await ethers.provider.getBlockNumber() - user1Tx.blockNumber
+              expect(compAccrued).to.be.equal(0);
+              expect(
+                (await read('Blo', 'balanceOf', user1)).div(1000000000)
+              ).to.be.equal(
+                user1BloBal.add(compRate.mul(blockDelta)).div(1000000000)
+              );
+
+              expect(await read('Blo', 'balanceOf', deployer)).to.be.equal(deployerBloBal.add(deployerCompAccured));
+            })
+          })
+        });
 
         it('repay()', async function () {
           const borrowBalance = await bUSDC.borrowBalanceStored(user1);
@@ -158,22 +263,11 @@ describe('CErc20Immutable', function () {
         });
 
         it('liquidateBorrow()', async function () {
-          // get WBTC collateral
-          const WBTCBal = await bWBTC.callStatic.balanceOfUnderlying(user1, {gasLimit: 500000});
-          // get BTC price
-          const WBTCPrice = await oracle.price('WBTC');
-          // get collateralFactor
-          const WBTCMarket = await comptroller.markets(bWBTC.address);
-          const dollarValueCollateralWBTC = WBTCBal.mul(WBTCMarket.collateralFactorMantissa).div(expScale).mul(WBTCPrice).div(1000000);
-
-          const borrowBalance = await bUSDC.borrowBalanceStored(user1);
-          // bring USDC to 8 decimals
-          const dollarValueBorrowUSDC = borrowBalance.mul(100);
-          // expect WBTC collateral * collateralFactor >= USDC borrow amount
-          expect(dollarValueCollateralWBTC).to.be.above(dollarValueBorrowUSDC);
-
-          // secure an amount for liquidiator
-          await impersonateTransferFrom(wbtc.address, WBTC_WHALE, liquidator, mintAmountWBTC);
+          // getAccountLiquidity
+          let liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
+          expect(liquidity[0]).to.be.equal(0);
+          expect(liquidity[1]).to.be.equal('5063105913200000000000');
+          expect(liquidity[2]).to.be.equal(0);
 
           // get WBTC
           const wbtcWhales = [
@@ -206,45 +300,49 @@ describe('CErc20Immutable', function () {
           );
           expect(await wbtc.balanceOf(user1)).to.be.equal(0);
 
+          // update price in oracle
           expect(await oracle.price('WBTC')).to.be.equal('37657764783');
           // time travel forward 15 min
           await network.provider.send("evm_increaseTime", [15*60])
           await oracle.getUnderlyingPrice(bWBTC.address, {gasLimit: 500000});
           expect(await oracle.price('WBTC')).to.be.below('19099000000');
 
-          // get WBTC collateral
-          const WBTCBalAfter = await bWBTC.callStatic.balanceOfUnderlying(user1, {gasLimit: 500000});
-          // get BTC price
-          const WBTCPriceAfter = await oracle.price('WBTC');
-          // get collateralFactor
-          const WBTCMarketAfter = await comptroller.markets(bWBTC.address);
-          const dollarValueCollateralWBTCAfter = WBTCBalAfter.mul(WBTCMarketAfter.collateralFactorMantissa).div(expScale).mul(WBTCPriceAfter).div(1000000);
-          const borrowBalanceAfter = await bUSDC.borrowBalanceStored(user1);
-          // bring USDC to 8 decimals
-          const dollarValueBorrowUSDCAfter = borrowBalanceAfter.mul(100);
-          // expect WBTC collateral * collateralFactor >= USDC borrow amount
-          expect(dollarValueCollateralWBTCAfter).to.be.below(dollarValueBorrowUSDCAfter);
+          // confirm user1 is under
+          liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
+          expect(liquidity[0]).to.be.equal(0);
+          expect(liquidity[1]).to.be.equal(0);
+          expect(liquidity[2]).to.be.above('2520000000000000000000');
 
-          // TODO: liquidateBorrow
-          expect(await wbtc.balanceOf(liquidator)).to.be.equal(mintAmountWBTC);
+          // secure an amount for liquidiator
+          await impersonateTransferFrom(usdc.address, USDC_WHALE, liquidator, borrowAmountUSDC);
+
+          expect(await wbtc.balanceOf(liquidator)).to.be.equal(0);
+          expect(await bWBTC.balanceOf(liquidator)).to.be.equal(0);
+
+          // liquidiate
           const liquidatorSigner = ethers.provider.getSigner(liquidator);
-          await wbtc.connect(liquidatorSigner).approve(bWBTC.address, mintAmountWBTC);
-          let tx = await bWBTC.connect(liquidatorSigner).liquidateBorrow(user1, mintAmountWBTC, bUSDC.address);
-          const all = await deployments.all();
-          for (const [key, value] of Object.entries(all)) {
-            console.log(`${key}: ${value.address}`);
-          }
-          console.log();
-          console.log(tx)
-          // await expect(
-          //   bWBTC.connect(liquidatorSigner).liquidateBorrow(user1, mintAmountWBTC, bUSDC.address)
-          // ).to.emit(bWBTC, 'LiquidateBorrow').withArgs(
-          //   liquidator,
-          //   user1,
-          //   mintAmountWBTC,
-          //   bUSDC.address,
-          //   1
-          // )
+          let closeFactorMantissa = await comptroller.closeFactorMantissa();
+          let closeAmount = borrowAmountUSDC.mul(closeFactorMantissa).div(ethers.constants.WeiPerEther);
+          await usdc.connect(liquidatorSigner).approve(bUSDC.address, closeAmount);
+          await expect(
+            bUSDC.connect(liquidatorSigner).liquidateBorrow(user1, closeAmount, bWBTC.address)
+          ).to.emit(bUSDC, 'LiquidateBorrow')
+
+
+          // check liquidiator profits, dollar value of BTC should be 125% of paid loan
+          let liquidationIncentiveMantissa = await comptroller.liquidationIncentiveMantissa();
+          const WBTCBalAfter = await bWBTC.callStatic.balanceOfUnderlying(liquidator, {gasLimit: 500000});
+          const BTCPrice = await oracle.price('WBTC');
+          // remove 8 decimals from BTCPrice and 2 decimals to match 6 decimals of USDC
+          // also div by 1e4 to remove potential precison errrors
+          expect(WBTCBalAfter.mul(BTCPrice).div(1e6).div(1e2).div(1e3)).to.be.equal(
+            closeAmount.mul(liquidationIncentiveMantissa).div(ethers.constants.WeiPerEther).div(1e3).sub(1)
+          );
+
+          expect(await wbtc.balanceOf(liquidator)).to.be.equal(0);
+          expect(await bWBTC.balanceOf(liquidator)).to.be.above('3000000000');
+          await bWBTC.connect(liquidatorSigner).redeem(await bWBTC.balanceOf(liquidator));
+          expect(await wbtc.balanceOf(liquidator)).to.be.above('60000000');
         });
       })
     })
