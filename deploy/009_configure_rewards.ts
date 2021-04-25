@@ -31,31 +31,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   } else {
     console.log(`skipping Comptroller._setCompRate (compRate: ${compRate})`)
   }
-
-  const bETH = await deployments.get('CEther');
-  const bUSDC = await deployments.get('CErc20Immutable.bUSDC');
-  const bWBTC = await deployments.get('CErc20Immutable.bWBTC');
-  const bBLO = await deployments.get('CErc20Immutable.bBLO');
-  const bloMarkets = [bETH.address, bUSDC.address, bWBTC.address, bBLO.address];
-  let marketsToBlo = [];
-
-  for (let index = 0; index < bloMarkets.length; index++) {
-    let marketData = await comptroller.markets(bloMarkets[index]);
-    if (!marketData.isComped) {
-      marketsToBlo.push(bloMarkets[index]);
-    } else {
-      console.log(`skipping market, already Comped (market: ${bloMarkets[index]})`)
-    }
-  }
-
-  if (marketsToBlo.length > 0) {
-    let tx = await comptroller._addCompMarkets(marketsToBlo, {gasLimit: 800000})
-    tx = await tx.wait()
-    console.log(`executing Comptroller._addCompMarkets (tx: ${tx.transactionHash}) ... markets ${marketsToBlo}: performed with ${tx.gasUsed.toString()} gas`)
-  } else {
-    console.log(`skipping Comptroller._addCompMarkets (all markets Comped)`)
-  }
 };
 export default func;
 func.tags = ['rewards']
-func.dependencies = ['app', 'blo', 'blo_market']
+func.dependencies = ['protocol', 'blo']

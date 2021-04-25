@@ -7,10 +7,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const compoundLens = await deploy("CompoundLens", {
-    from: deployer,
-    log: true
-  });
+  // update admin on Unitroller
+  // update admin on all markets
+  // update admin on all models
 };
 export default func;
-func.tags = ['lens', 'protocol'];
+func.tags = ['migrate_to_gov']
+func.dependencies = ['protocol', 'gov']

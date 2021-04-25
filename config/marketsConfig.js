@@ -19,7 +19,9 @@ const bETH = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bETHRinkeby = {
@@ -39,7 +41,9 @@ const bETHRinkeby = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bBLO = {
@@ -53,6 +57,7 @@ const bBLO = {
     uniswapMarket: '#',
     isUniswapReversed: false
   },
+  weth: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   initialExchangeRateMantissa: '200000000000000000000000000',
   name: 'Based Loans BLO',
   symbol: 'bBLO',
@@ -60,7 +65,8 @@ const bBLO = {
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0',
-  weth: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bBLORinkeby = {
@@ -85,7 +91,9 @@ const bUSDC = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bUSDCRinkeby = {
@@ -105,7 +113,9 @@ const bUSDCRinkeby = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bUSDT = {
@@ -125,7 +135,9 @@ const bUSDT = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bDAI = {
@@ -145,7 +157,9 @@ const bDAI = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bWBTC = {
@@ -165,7 +179,9 @@ const bWBTC = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bWBTCRinkeby = {
@@ -185,7 +201,9 @@ const bWBTCRinkeby = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 const bDPI = {
@@ -205,7 +223,9 @@ const bDPI = {
   decimals: '8',
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '400000000000000000',
-  borrowCaps: '0'
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: true
 }
 
 module.exports = {

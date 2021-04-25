@@ -12,7 +12,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   for (let i = 0; i < models.length; i++) {
     const key = Object.keys(models[i])[0];
     const model = models[i][key];
-    // console.log(model,{key}, deployer)
 
     if (key === 'DAIModel') {
       const args = [
@@ -45,4 +44,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 };
 export default func;
-func.tags = ['models', 'app'];
+func.tags = ['models', 'protocol'];

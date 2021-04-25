@@ -7,10 +7,23 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  // update admin on Unitroller
-  // update admin on all markets
-  // update admin on all models
+  const fourYears = 126144000;
+  const start = 1618935600;
+  const cliff = 0;
+  const revocable = false;
+
+  const vestings = [
+  ]
+
+  for (let index = 0; index < vestings.length; index++) {
+    let vest = vestings[index];
+    await deploy("TokenVesting" + index, {
+      contract: "TokenVesting",
+      from: deployer,
+      log: true,
+      args: vest
+    })
+  }
 };
 export default func;
-func.tags = ['migrate_to_gov']
-func.dependencies = ['app', 'gov']
+func.tags = ['vesting'];

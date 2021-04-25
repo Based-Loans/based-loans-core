@@ -48,4 +48,5 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   }
 };
 export default func;
-func.tags = ['comptrollerConfig', 'app'];
+func.tags = ['config', 'protocol'];
+func.dependencies = ['oracle']
