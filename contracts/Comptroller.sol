@@ -1289,10 +1289,10 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
      */
     function transferComp(address user, uint userAccrued, uint threshold) internal returns (uint) {
         if (userAccrued >= threshold && userAccrued > 0) {
-            Blo comp = Blo(getCompAddress());
-            uint compRemaining = comp.balanceOf(address(this));
-            if (userAccrued <= compRemaining) {
-                comp.transfer(user, userAccrued);
+            Blo blo = Blo(getCompAddress());
+            uint bloRemaining = blo.balanceOf(address(this));
+            if (userAccrued <= bloRemaining) {
+                blo.transfer(user, userAccrued);
                 return 0;
             }
         }
