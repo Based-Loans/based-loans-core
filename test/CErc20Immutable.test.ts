@@ -7,6 +7,7 @@ import {WBTC_ADDRESS, WBTC_WHALE, USDC_ADDRESS, USDC_WHALE} from './utils';
 import UniswapV2Router02 from './abi/UniswapV2Router02.json';
 import UniswapV2Factory from './abi/UniswapV2Factory.json';
 import { FACTORY_ADDRESS, INIT_CODE_HASH } from '@uniswap/sdk'
+import * as CONFIG from '../config';
 
 
 describe('CErc20Immutable', function () {
@@ -154,6 +155,9 @@ describe('CErc20Immutable', function () {
 
           beforeEach(async function () {
             await comptroller.refreshCompSpeeds();
+            if(!CONFIG[network.name].marketsConfig.bUSDC.isComped) {
+              this.skip();
+            }
           })
 
           it('should have compSpeeds', async function () {
