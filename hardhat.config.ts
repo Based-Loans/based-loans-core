@@ -31,7 +31,16 @@ const config: HardhatUserConfig = {
       url: "https://mainnet.infura.io/v3/" + INFURA_ID,
       accounts: [`${privateKey}`],
       // gasPrice: 90000000000
-    }
+    },
+    matic: {
+      //   url: "https://rpc-mainnet.matic.network",
+      url: "https://rpc-mainnet.maticvigil.com",
+      accounts: [`${privateKey}`],
+      chainId: 137,
+      live: true,
+      saveDeployments: true,
+      gasMultiplier: 2
+    },
   },
   solidity: {
     compilers: [
