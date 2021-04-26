@@ -108,7 +108,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     }
 
     if((await comptroller.markets(bToken.cToken)).isComped != bToken.isComped) {
-      let tx = await comptroller._addCompMarkets([bToken.cToken]);
+      let tx = await comptroller._addCompMarkets([bToken.cToken], {gasLimit: 750000});
       tx = await tx.wait()
       console.log(`executing Comptroller._addCompMarkets (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
     } else {
