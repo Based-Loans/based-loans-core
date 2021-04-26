@@ -41,7 +41,7 @@ contract UniswapAnchoredView is UniswapConfig {
     /// @notice The event emitted when the uniswap window changes
     event UniswapWindowUpdated(bytes32 indexed symbolHash, uint oldTimestamp, uint newTimestamp, uint oldPrice, uint newPrice);
 
-    bytes32 constant ethHash = keccak256(abi.encodePacked("ETH"));
+    bytes32 public immutable nativeTokenHash;
     bytes32 constant rotateHash = keccak256(abi.encodePacked("rotate"));
 
     /**
@@ -49,8 +49,9 @@ contract UniswapAnchoredView is UniswapConfig {
      * @dev Note that to avoid immature TWAPs, the system must run for at least a single anchorPeriod before using.
      * @param anchorPeriod_ The minimum amount of time required for the old uniswap price accumulator to be replaced
      */
-    constructor(uint anchorPeriod_) public {
+    constructor(uint anchorPeriod_, string memory nativeTokenSymbol_) public {
         anchorPeriod = anchorPeriod_;
+        nativeTokenHash = keccak256(abi.encodePacked(nativeTokenSymbol_));
     }
 
     function addTokens(TokenConfig[] memory configs) public onlyOwner {
@@ -86,7 +87,7 @@ contract UniswapAnchoredView is UniswapConfig {
         if (config.priceSource == PriceSource.REPORTER) return prices[config.symbolHash];
         if (config.priceSource == PriceSource.FIXED_USD) return config.fixedPrice;
         if (config.priceSource == PriceSource.FIXED_ETH) {
-            uint usdPerEth = prices[ethHash];
+            uint usdPerEth = prices[nativeTokenHash];
             require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
             return mul(usdPerEth, config.fixedPrice) / ethBaseUnit;
         }
@@ -105,7 +106,7 @@ contract UniswapAnchoredView is UniswapConfig {
         }
         if (config.priceSource == PriceSource.FIXED_USD) return config.fixedPrice;
         if (config.priceSource == PriceSource.FIXED_ETH) {
-            uint usdPerEth = prices[ethHash];
+            uint usdPerEth = prices[nativeTokenHash];
             require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
             return mul(usdPerEth, config.fixedPrice) / ethBaseUnit;
         }
@@ -123,7 +124,7 @@ contract UniswapAnchoredView is UniswapConfig {
         if (config.priceSource == PriceSource.REPORTER) price = prices[config.symbolHash];
         if (config.priceSource == PriceSource.FIXED_USD) price = config.fixedPrice;
         if (config.priceSource == PriceSource.FIXED_ETH) {
-            uint usdPerEth = prices[ethHash];
+            uint usdPerEth = prices[nativeTokenHash];
             require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
             price = mul(usdPerEth, config.fixedPrice) / ethBaseUnit;
         }
@@ -149,7 +150,7 @@ contract UniswapAnchoredView is UniswapConfig {
         uint ethPrice = fetchEthPrice();
 
         uint anchorPrice;
-        if (config.symbolHash == ethHash) {
+        if (config.symbolHash == nativeTokenHash) {
             anchorPrice = ethPrice;
         } else {
             anchorPrice = fetchAnchorPrice(config, ethPrice);
@@ -175,7 +176,7 @@ contract UniswapAnchoredView is UniswapConfig {
      *  Conversion factor is 1e18 for eth/usdc market, since we decode uniswap price statically with 18 decimals.
      */
     function fetchEthPrice() internal returns (uint) {
-        return fetchAnchorPrice(getTokenConfigBySymbolHash(ethHash), ethBaseUnit);
+        return fetchAnchorPrice(getTokenConfigBySymbolHash(nativeTokenHash), ethBaseUnit);
     }
 
     /**
