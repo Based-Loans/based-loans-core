@@ -13,6 +13,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await hre.ethers.provider.getSigner(deployer)
   );
 
+  // TODO: what is reward token on other chains?
   const bloAddress = (await deployments.get('Blo')).address
 
   if((await comptroller.getCompAddress()) != bloAddress) {

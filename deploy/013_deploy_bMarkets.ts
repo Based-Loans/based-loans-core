@@ -14,10 +14,18 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await hre.ethers.provider.getSigner(deployer)
   );
 
-  const tokenConfigs = [
-    config.marketsConfig.bUSDC,
-    config.marketsConfig.bWBTC
-  ];
+  let tokenConfigs;
+  if (hre.network.name == "matic") {
+    tokenConfigs= [
+      config.marketsConfig.bMatic,
+      config.marketsConfig.bUSDC
+    ];
+  } else {
+    tokenConfigs = [
+      config.marketsConfig.bUSDC,
+      config.marketsConfig.bWBTC
+    ];
+  }
 
   for (let i = 0; i < tokenConfigs.length; i++) {
     let bToken = tokenConfigs[i];
@@ -49,7 +57,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     if (observation.timestamp.toString() == '0') {
       await execute(
         'UniswapAnchoredView',
-        {from: deployer, log: true},
+        {from: deployer, log: true, gasLimit: 750000},
         'addTokens',
         [tokenConfig]
       );
@@ -77,7 +85,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         `skipping Comptroller._supportMarket (isListed (${bToken.symbol}): ${(await comptroller.markets(bToken.cToken)).isListed})`)
     }
 
-    console.log(bToken.cToken)
     if(
       (await comptroller.markets(bToken.cToken)).collateralFactorMantissa.toString()
       != bToken.collateralFactorMantissa
@@ -111,4 +118,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 };
 export default func;
 func.tags = ['bMarkets'];
-func.dependencies = ['protocol', 'ethMarket']
+func.dependencies = ['protocol']

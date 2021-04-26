@@ -11,7 +11,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const uniswapOracle = await deploy("UniswapAnchoredView", {
     from: deployer,
     log: true,
-    args: [config.anchorPeriod]
+    args: [config.anchorPeriod, config.nativeTokenSymbol]
   });
 };
 export default func;
