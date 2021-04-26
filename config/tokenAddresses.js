@@ -106,6 +106,18 @@ const tokens = {
     decimals: 18,
     symbol: "FRAX",
     symbolHash: "0x9171c8ee5d053a5cb4f89f254214c629dd22087419ac71a852ac36b733813444"
+  },
+  MATIC__matic: {
+    address: "0x0000000000000000000000000000000000001010",
+    decimals: 18,
+    symbol: "MATIC",
+    symbolHash: "0xa6a7de01e8b7ba6a4a61c782a73188d808fc1f3cf5743fadb68a02ed884b594f"
+  },
+  USDC__matic: {
+    address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    decimals: 6,
+    symbol: "USDC",
+    symbolHash: "0xd6aca1be9729c13d677335161321649cccae6a591554772516700f986f942eaa"
   }
 }
 

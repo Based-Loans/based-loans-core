@@ -21,10 +21,10 @@ const bETH = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
-const bETHRinkeby = {
+const bETH__rinkeby = {
   tokenConfig: {
     cToken: '#',
     underlying: ethers.constants.AddressZero,
@@ -43,7 +43,7 @@ const bETHRinkeby = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
 const bBLO = {
@@ -66,7 +66,7 @@ const bBLO = {
   collateralFactorMantissa: '0',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
 const bBLORinkeby = {
@@ -79,7 +79,7 @@ const bUSDC = {
     cToken: '#',
     underlying: tokens.USDC.address,
     symbolHash: tokens.USDC.symbolHash,
-    baseUnit: 10**tokens.USDC.decimals,
+    baseUnit: (10**tokens.USDC.decimals).toString(),
     priceSource: 1,
     fixedPrice: 1000000,
     uniswapMarket: '0x0000000000000000000000000000000000000000',
@@ -93,15 +93,15 @@ const bUSDC = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
-const bUSDCRinkeby = {
+const bUSDC__rinkeby = {
   tokenConfig: {
     cToken: '#',
     underlying: "0xeb8f08a975Ab53E34D8a0330E0D34de942C95926",
     symbolHash: tokens.USDC.symbolHash,
-    baseUnit: 10**tokens.USDC.decimals,
+    baseUnit: (10**tokens.USDC.decimals).toString(),
     priceSource: 1,
     fixedPrice: 1000000,
     uniswapMarket: '0x0000000000000000000000000000000000000000',
@@ -115,7 +115,7 @@ const bUSDCRinkeby = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
 const bUSDT = {
@@ -123,7 +123,7 @@ const bUSDT = {
     cToken: '#',
     underlying: tokens.USDT.address,
     symbolHash: tokens.USDT.symbolHash,
-    baseUnit: 10**tokens.USDT.decimals,
+    baseUnit: (10**tokens.USDT.decimals).toString(),
     priceSource: 1,
     fixedPrice: 1000000,
     uniswapMarket: '0x0000000000000000000000000000000000000000',
@@ -137,7 +137,7 @@ const bUSDT = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
 const bDAI = {
@@ -145,7 +145,7 @@ const bDAI = {
     cToken: '#',
     underlying: tokens.DAI.address,
     symbolHash: tokens.DAI.symbolHash,
-    baseUnit: 10**tokens.DAI.decimals,
+    baseUnit: (10**tokens.DAI.decimals).toString(),
     priceSource: 2,
     fixedPrice: 0,
     uniswapMarket: '0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11',
@@ -159,7 +159,7 @@ const bDAI = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
 const bWBTC = {
@@ -167,7 +167,7 @@ const bWBTC = {
     cToken: '#',
     underlying: tokens.WBTC.address,
     symbolHash: tokens.WBTC.symbolHash,
-    baseUnit: 10**tokens.WBTC.decimals,
+    baseUnit: (10**tokens.WBTC.decimals).toString(),
     priceSource: 2,
     fixedPrice: 0,
     uniswapMarket: '0xBb2b8038a1640196FbE3e38816F3e67Cba72D940',
@@ -181,7 +181,7 @@ const bWBTC = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
 const bWBTCRinkeby = {
@@ -189,7 +189,7 @@ const bWBTCRinkeby = {
     cToken: '#',
     underlying: "0xb480C498F33a664DD43Ffab82D9c49B073Db8b2c",
     symbolHash: tokens.WBTC.symbolHash,
-    baseUnit: 10**tokens.WBTC.decimals,
+    baseUnit: (10**tokens.WBTC.decimals).toString(),
     priceSource: 2,
     fixedPrice: 0,
     uniswapMarket: '0x12bfA2C92F0bf1A67802E13BbC57DE89DE96b893',
@@ -203,7 +203,7 @@ const bWBTCRinkeby = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
 
 const bDPI = {
@@ -211,7 +211,7 @@ const bDPI = {
     cToken: '#',
     underlying: tokens.DPI.address,
     symbolHash: tokens.DPI.symbolHash,
-    baseUnit: 10**tokens.DPI.decimals,
+    baseUnit: (10**tokens.DPI.decimals).toString(),
     priceSource: 2,
     fixedPrice: 0,
     uniswapMarket: '0x0000000000000000000000000000000000000000',
@@ -225,10 +225,59 @@ const bDPI = {
   collateralFactorMantissa: '400000000000000000',
   borrowCaps: '0',
   model: 'HQLAModel',
-  isComped: true
+  isComped: false
 }
+
+// ####### MATIC markets #######
+
+const bMatic__matic = {
+  tokenConfig: {
+    cToken: '#',
+    underlying: tokens.MATIC__matic.address,
+    symbolHash: tokens.MATIC__matic.symbolHash,
+    baseUnit: (10**tokens.MATIC__matic.decimals).toString(),
+    priceSource: 2,
+    fixedPrice: 0,
+    uniswapMarket: '0x6e7a5FAFcec6BB1e78bAE2A1F0B612012BF14827',
+    isUniswapReversed: false
+  },
+  initialExchangeRateMantissa: '200000000000000000000000000',
+  name: 'Based Loans ' + tokens.MATIC__matic.symbol,
+  symbol: 'b' + tokens.MATIC__matic.symbol,
+  decimals: '8',
+  reserveFactorMantissa: '0',
+  collateralFactorMantissa: '400000000000000000',
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: false
+}
+
+const bUSDC__matic = {
+  tokenConfig: {
+    cToken: '#',
+    underlying: tokens.USDC__matic.address,
+    symbolHash: tokens.USDC__matic.symbolHash,
+    baseUnit: (10**tokens.USDC__matic.decimals).toString(),
+    priceSource: 1,
+    fixedPrice: 1000000,
+    uniswapMarket: '0x0000000000000000000000000000000000000000',
+    isUniswapReversed: false
+  },
+  initialExchangeRateMantissa: '200000000000000',
+  name: 'Based Loans ' + tokens.USDC__matic.symbol,
+  symbol: 'b' + tokens.USDC__matic.symbol,
+  decimals: '8',
+  reserveFactorMantissa: '0',
+  collateralFactorMantissa: '400000000000000000',
+  borrowCaps: '0',
+  model: 'HQLAModel',
+  isComped: false
+}
+
+// ####### MATIC markets END #######
 
 module.exports = {
   "mainnet": {bETH, bUSDC, bUSDT, bDAI, bWBTC, bBLO, bDPI},
-  "rinkeby": {"bETH": bETHRinkeby, "bUSDC": bUSDCRinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bBLO: bBLORinkeby}
+  "matic": {"bMatic": bMatic__matic, "bUSDC": bUSDC__matic},
+  "rinkeby": {"bETH": bETH__rinkeby, "bUSDC": bUSDC__rinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bBLO: bBLORinkeby}
 };
