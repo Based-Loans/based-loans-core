@@ -1,17 +1,18 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { DeployFunction } from 'hardhat-deploy/types';
-import * as CONFIG from '../config';
+import * as CONFIG from '../../config';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre;
   const { deploy, execute, read } = deployments;
   const { deployer } = await getNamedAccounts();
+  const config = CONFIG[hre.network.name];
 
-  const blo = await deploy("Blo", {
+  const uniswapOracle = await deploy("UniswapAnchoredView", {
     from: deployer,
     log: true,
-    args: [deployer]
-  })
+    args: [config.anchorPeriod, config.nativeTokenSymbol]
+  });
 };
 export default func;
-func.tags = ['blo'];
+func.tags = ['oracle', 'protocol'];

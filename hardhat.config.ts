@@ -18,14 +18,14 @@ const config: HardhatUserConfig = {
         blockNumber: 11799001
         // url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
         // blockNumber: 8208002,
-      }
+      },
     },
     localhost: {
       url: "http://localhost:8545",
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
-      accounts: [`${privateKey}`]
+      accounts: [`${privateKey}`],
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/" + INFURA_ID,
@@ -39,7 +39,8 @@ const config: HardhatUserConfig = {
       chainId: 137,
       live: true,
       saveDeployments: true,
-      gasMultiplier: 2
+      gasMultiplier: 2,
+      deploy: ["deploy/matic"]
     },
   },
   solidity: {
@@ -82,6 +83,7 @@ const config: HardhatUserConfig = {
     timeout: 0,
   },
   paths: {
+    deploy: "deploy/ethereum",
     sources: "./contracts",
   }
 };
