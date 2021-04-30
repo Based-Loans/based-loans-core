@@ -15,7 +15,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   );
 
   const tokenConfigs= [
-    config.marketsConfig.bMatic,
     config.marketsConfig.bUSDC
   ];
 
@@ -45,8 +44,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     let tokenConfig = bToken.tokenConfig;
     tokenConfig.cToken = bToken.cToken;
 
-    const observation = await read('UniswapAnchoredView', 'newObservations', tokenConfig.symbolHash);
-    if (observation.timestamp.toString() == '0') {
+    const index = await read('UniswapAnchoredView', 'cTokenIndex', tokenConfig.cToken);
+    const token = await read('UniswapAnchoredView', 'tokens', index);
+    if (token.cToken != tokenConfig.cToken) {
       await execute(
         'UniswapAnchoredView',
         {from: deployer, log: true, gasLimit: 750000},
@@ -54,7 +54,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         [tokenConfig]
       );
     } else {
-      console.log(`skipping UniswapAnchoredView.addTokens (newObservations[symbolHash]: ${observation.timestamp.toString()})`)
+      console.log(`skipping UniswapAnchoredView.addTokens (cTokenIndex[address]: ${index})`)
     }
 
     if((await read(bToken.artifact, 'reserveFactorMantissa')).toString() != bToken.reserveFactorMantissa) {
@@ -99,7 +99,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       console.log(`skipping Comptroller._setMarketBorrowCaps (borrowCaps (${bToken.symbol}): ${(await comptroller.borrowCaps(bToken.cToken)).toString()})`)
     }
 
-    if((await comptroller.markets(bToken.cToken)).isComped != bToken.isComped) {
+    if(bToken.isComped && !(await comptroller.markets(bToken.cToken)).isComped) {
       let tx = await comptroller._addCompMarkets([bToken.cToken], {gasLimit: 750000});
       tx = await tx.wait()
       console.log(`executing Comptroller._addCompMarkets (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
