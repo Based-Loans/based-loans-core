@@ -32,9 +32,6 @@ contract UniswapAnchoredView is UniswapConfig {
     /// @notice The new observation for each symbolHash
     mapping(bytes32 => Observation) public newObservations;
 
-    /// @notice The event emitted when the stored price is updated
-    event PriceUpdated(string symbol, uint price);
-
     /// @notice The event emitted when anchor price is updated
     event AnchorPriceUpdated(address cToken, uint anchorPrice, uint oldTimestamp, uint newTimestamp);
 
