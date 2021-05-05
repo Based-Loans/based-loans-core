@@ -1239,6 +1239,7 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
      * @notice Calculate COMP accrued by a supplier and possibly transfer it to them
      * @param cToken The market in which the supplier is interacting
      * @param supplier The address of the supplier to distribute COMP to
+     * @param distributeAll If true, all token will be distributed
      */
     function distributeSupplierComp(address cToken, address supplier, bool distributeAll) internal {
         CompMarketState storage supplyState = compSupplyState[cToken];
