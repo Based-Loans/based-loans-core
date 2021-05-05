@@ -70,6 +70,9 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
     /// @notice Emitted when borrow cap guardian is changed
     event NewBorrowCapGuardian(address oldBorrowCapGuardian, address newBorrowCapGuardian);
 
+    /// @notice Emitted when blo address is changed
+    event NewBloAddress(address oldBloAddress, address newBloAddress);
+
     /// @notice The threshold above which the flywheel transfers COMP, in wei
     uint public constant compClaimThreshold = 0.001e18;
 
@@ -1354,6 +1357,8 @@ contract Comptroller is ComptrollerV4Storage, ComptrollerInterface, ComptrollerE
      */
     function _setCompAddress(address _comp) public {
         require(msg.sender == admin, "not an admin");
+
+        emit NewBloAddress(comp, _comp);
         comp = _comp;
     }
 
