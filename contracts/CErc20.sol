@@ -178,6 +178,8 @@ contract CErc20 is CToken, CErc20Interface {
      *            See here: https://medium.com/coinmonks/missing-return-value-bug-at-least-130-tokens-affected-d67bf08521ca
      */
     function doTransferOut(address payable to, uint amount) internal override {
+        require(to != address(0), "cannot send to zero address");
+        
         EIP20NonStandardInterface token = EIP20NonStandardInterface(underlying);
         token.transfer(to, amount);
 

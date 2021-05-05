@@ -143,6 +143,7 @@ contract CEther is CToken {
     }
 
     function doTransferOut(address payable to, uint amount) internal override {
+        require(to != address(0), "cannot send to zero address");
         (bool success, ) = to.call.value(amount)("");
         require(success, "doTransferOut failed");
     }
