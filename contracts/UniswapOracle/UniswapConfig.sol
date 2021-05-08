@@ -40,7 +40,8 @@ contract UniswapConfig is Ownable {
 
     function _addTokensInternal(TokenConfig[] memory configs) internal {
         for (uint i = 0; i < configs.length; i++) {
-            uint index = i + numTokens;
+            // +1 so index 0 stays empty
+            uint index = i + numTokens + 1;
             tokens[index] = configs[i];
             cTokenIndex[configs[i].cToken] = index;
             underlyingIndex[configs[i].underlying] = index;
@@ -68,7 +69,7 @@ contract UniswapConfig is Ownable {
      * @return The config object
      */
     function getTokenConfig(uint i) public view returns (TokenConfig memory) {
-        require(i < numTokens, "token config not found");
+        require(i <= numTokens, "token config not found");
 
         return tokens[i];
     }
@@ -89,7 +90,7 @@ contract UniswapConfig is Ownable {
      */
     function getTokenConfigBySymbolHash(bytes32 symbolHash) public view returns (TokenConfig memory) {
         uint index = getSymbolHashIndex(symbolHash);
-        if (index != uint(-1)) {
+        if (index != 0) {
             return getTokenConfig(index);
         }
 
@@ -104,7 +105,7 @@ contract UniswapConfig is Ownable {
      */
     function getTokenConfigByCToken(address cToken) public view returns (TokenConfig memory) {
         uint index = getCTokenIndex(cToken);
-        if (index != uint(-1)) {
+        if (index != 0) {
             return getTokenConfig(index);
         }
 
@@ -118,7 +119,7 @@ contract UniswapConfig is Ownable {
      */
     function getTokenConfigByUnderlying(address underlying) public view returns (TokenConfig memory) {
         uint index = getUnderlyingIndex(underlying);
-        if (index != uint(-1)) {
+        if (index != 0) {
             return getTokenConfig(index);
         }
 
