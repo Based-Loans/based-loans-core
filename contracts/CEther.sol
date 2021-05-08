@@ -111,7 +111,7 @@ contract CEther is CToken {
     /**
      * @notice Send Ether to CEther to mint
      */
-    fallback () external payable {
+    receive () external payable {
         (uint err,) = mintInternal(msg.value);
         requireNoError(err, "mint failed");
     }
