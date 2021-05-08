@@ -151,6 +151,23 @@ describe('CErc20Immutable', function () {
           startingBlockNumber = tx.blockNumber;
         })
 
+        it('should be able to handle 50 markets in refreshCompSpeeds()', async function () {
+          let deployerSigner = await ethers.provider.getSigner(deployer);
+          await comptroller.connect(deployerSigner)._setCompRate(ethers.utils.parseUnits('1', 16))
+          let markets = await comptroller.getAllMarkets();
+          await comptroller.connect(deployerSigner)._addCompMarkets(markets);
+
+          let tx = await comptroller.refreshCompSpeeds();
+          tx = await tx.wait();
+
+          let expectedNumberOfMarkets = ethers.BigNumber.from(100);
+          let multiplier = expectedNumberOfMarkets.div(markets.length);
+          let blockGasLimit = 8000000;
+          let gasExpectedFor50Markets = tx.gasUsed.mul(multiplier);
+          console.log('gasExpectedFor50Markets', gasExpectedFor50Markets.toString())
+          expect(gasExpectedFor50Markets).to.be.lt(blockGasLimit)
+        })
+
         describe('rewards', async function () {
 
           beforeEach(async function () {
