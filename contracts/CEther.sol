@@ -111,7 +111,7 @@ contract CEther is CToken {
     /**
      * @notice Send Ether to CEther to mint
      */
-    fallback () external payable {
+    receive () external payable {
         (uint err,) = mintInternal(msg.value);
         requireNoError(err, "mint failed");
     }
@@ -143,6 +143,7 @@ contract CEther is CToken {
     }
 
     function doTransferOut(address payable to, uint amount) internal override {
+        require(to != address(0), "cannot send to zero address");
         (bool success, ) = to.call.value(amount)("");
         require(success, "doTransferOut failed");
     }

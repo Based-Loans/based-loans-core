@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.10;
+pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
 import "./UniswapConfig.sol";
@@ -31,9 +31,6 @@ contract UniswapAnchoredView is UniswapConfig {
 
     /// @notice The new observation for each symbolHash
     mapping(bytes32 => Observation) public newObservations;
-
-    /// @notice The event emitted when the stored price is updated
-    event PriceUpdated(string symbol, uint price);
 
     /// @notice The event emitted when anchor price is updated
     event AnchorPriceUpdated(address cToken, uint anchorPrice, uint oldTimestamp, uint newTimestamp);

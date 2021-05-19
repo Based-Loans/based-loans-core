@@ -120,6 +120,16 @@ contract CErc20 is CToken, CErc20Interface {
         return _addReservesInternal(addAmount);
     }
 
+    /**
+     * @notice A public function to sweep accidental ERC-20 transfers to this contract. Tokens are sent to admin (timelock)
+     * @param token The address of the ERC-20 token to sweep
+     */
+    function sweepToken(EIP20NonStandardInterface token) external {
+    	require(address(token) != underlying, "CErc20::sweepToken: can not sweep underlying token");
+    	uint256 balance = token.balanceOf(address(this));
+    	token.transfer(admin, balance);
+    }
+
     /*** Safe Token ***/
 
     /**
@@ -178,6 +188,8 @@ contract CErc20 is CToken, CErc20Interface {
      *            See here: https://medium.com/coinmonks/missing-return-value-bug-at-least-130-tokens-affected-d67bf08521ca
      */
     function doTransferOut(address payable to, uint amount) internal override {
+        require(to != address(0), "cannot send to zero address");
+
         EIP20NonStandardInterface token = EIP20NonStandardInterface(underlying);
         token.transfer(to, amount);
 
