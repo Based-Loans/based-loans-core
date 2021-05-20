@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 
-interface Comptroller {
+interface IComptroller {
     function enterMarkets(address[] calldata cTokens) external returns (uint[] memory);
     function exitMarket(address cToken) external returns (uint);
     function getAssetsIn(address account) external view returns (address[] memory);

@@ -5,10 +5,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 // Import Compound components
-import "./compound/CErc20.sol";
-import "./compound/CEther.sol";
-import "./compound/Comptroller.sol";
-import "./compound/PriceOracle.sol";
+import "./compound/ICErc20.sol";
+import "./compound/ICEther.sol";
+import "./compound/IComptroller.sol";
+import "./compound/IPriceOracle.sol";
 
 // Import Uniswap components
 import "./uniswap/UniswapV2Library.sol";
@@ -27,8 +27,8 @@ contract Liquidator is Ownable, IUniswapV2Callee {
     address immutable public ROUTER;
     address immutable public FACTORY;
 
-    Comptroller public comptroller;
-    PriceOracle public priceOracle;
+    IComptroller public comptroller;
+    IPriceOracle public priceOracle;
 
     uint private closeFact;
     uint private liqIncent;
@@ -53,8 +53,8 @@ contract Liquidator is Ownable, IUniswapV2Callee {
     receive() external payable {}
 
     function setComptroller(address _comptrollerAddress) public onlyOwner {
-        comptroller = Comptroller(_comptrollerAddress);
-        priceOracle = PriceOracle(comptroller.oracle());
+        comptroller = IComptroller(_comptrollerAddress);
+        priceOracle = IPriceOracle(comptroller.oracle());
         closeFact = comptroller.closeFactorMantissa();
         liqIncent = comptroller.liquidationIncentiveMantissa();
     }
@@ -64,14 +64,12 @@ contract Liquidator is Ownable, IUniswapV2Callee {
         require(liquidity == 0, "Nothing to liquidate");
         // uint(10**18) adjustments ensure that all place values are dedicated
         // to repay and seize precision rather than unnecessary closeFact and liqIncent decimals
-        uint repayMax = CErc20(_repayCToken).borrowBalanceCurrent(_borrower) * closeFact / uint(10**18);
-        uint seizeMax = CErc20(_seizeCToken).balanceOfUnderlying(_borrower) * uint(10**18) / liqIncent;
-
+        uint repayMax = ICErc20(_repayCToken).borrowBalanceCurrent(_borrower) * closeFact / uint(10**18);
+        uint seizeMax = ICErc20(_seizeCToken).balanceOfUnderlying(_borrower) * uint(10**18) / liqIncent;
         uint uPriceRepay = priceOracle.getUnderlyingPrice(_repayCToken);
         // Gas savings -- instead of making new vars `repayMax_Eth` and `seizeMax_Eth` just reassign
         repayMax *= uPriceRepay;
         seizeMax *= priceOracle.getUnderlyingPrice(_seizeCToken);
-
         // Gas savings -- instead of creating new var `repay_Eth = repayMax < seizeMax ? ...` and then
         // converting to underlying units by dividing by uPriceRepay, we can do it all in one step
         _liquidate(_borrower, _repayCToken, _seizeCToken, ((repayMax < seizeMax) ? repayMax : seizeMax) / uPriceRepay);
@@ -83,9 +81,9 @@ contract Liquidator is Ownable, IUniswapV2Callee {
 
         if (_repayCToken == CETH) {
             r = WETH;
-            pair = IUniswapV2Factory(FACTORY).getPair(WETH, CErc20Storage(_seizeCToken).underlying());
+            pair = IUniswapV2Factory(FACTORY).getPair(WETH, ICErc20Storage(_seizeCToken).underlying());
         } else {
-            r = CErc20Storage(_repayCToken).underlying();
+            r = ICErc20Storage(_repayCToken).underlying();
             pair = IUniswapV2Factory(FACTORY).getPair(WETH, r);
         }
 
@@ -112,10 +110,10 @@ contract Liquidator is Ownable, IUniswapV2Callee {
 
             // Perform the liquidation
             IERC20(estuary).safeApprove(repayCToken, amount);
-            CErc20(repayCToken).liquidateBorrow(borrower, amount, seizeCToken);
+            ICErc20(repayCToken).liquidateBorrow(borrower, amount, seizeCToken);
 
             // Redeem cTokens for underlying ERC20
-            CErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
+            ICErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
 
             // Compute debt and pay back pair
             IERC20(estuary).transfer(msg.sender, (amount * 1000 / 997) + 1);
@@ -130,10 +128,10 @@ contract Liquidator is Ownable, IUniswapV2Callee {
             IWETH(WETH).withdraw(amount);
 
             // Perform the liquidation
-            CEther(repayCToken).liquidateBorrow{value: amount}(borrower, seizeCToken);
+            ICEther(repayCToken).liquidateBorrow{value: amount}(borrower, seizeCToken);
 
             // Redeem cTokens for underlying ERC20
-            CErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
+            ICErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
 
             // Compute debt and pay back pair
             (uint reserve0, uint reserve1,) = IUniswapV2Pair(msg.sender).getReserves();
@@ -148,10 +146,10 @@ contract Liquidator is Ownable, IUniswapV2Callee {
 
             // Perform the liquidation
             IERC20(source).safeApprove(repayCToken, amount);
-            CErc20(repayCToken).liquidateBorrow(borrower, amount, seizeCToken);
+            ICErc20(repayCToken).liquidateBorrow(borrower, amount, seizeCToken);
 
             // Redeem cTokens for underlying ERC20 or ETH
-            CErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
+            ICErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
 
             // Convert ETH to WETH
             IWETH(WETH).deposit{value: address(this).balance}();
@@ -176,12 +174,12 @@ contract Liquidator is Ownable, IUniswapV2Callee {
 
         // Perform the liquidation
         IERC20(source).safeApprove(repayCToken, amount);
-        CErc20(repayCToken).liquidateBorrow(borrower, amount, seizeCToken);
+        ICErc20(repayCToken).liquidateBorrow(borrower, amount, seizeCToken);
 
         // Redeem cTokens for underlying ERC20 or ETH
-        uint seized_uUnits = CErc20(seizeCToken).balanceOfUnderlying(address(this));
-        CErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
-        address seizeUToken = CErc20Storage(seizeCToken).underlying();
+        uint seized_uUnits = ICErc20(seizeCToken).balanceOfUnderlying(address(this));
+        ICErc20(seizeCToken).redeem(IERC20(seizeCToken).balanceOf(address(this)));
+        address seizeUToken = ICErc20Storage(seizeCToken).underlying();
 
         // Compute debt
         (uint reserve0, uint reserve1,) = IUniswapV2Pair(msg.sender).getReserves();

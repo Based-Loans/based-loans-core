@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.10;
 
-interface CErc20 {
+interface ICErc20 {
     function mint(uint mintAmount) external returns (uint);
     function redeem(uint redeemTokens) external returns (uint);
     function redeemUnderlying(uint redeemAmount) external returns (uint);
@@ -13,6 +13,6 @@ interface CErc20 {
     function balanceOfUnderlying(address account) external returns (uint);
 }
 
-interface CErc20Storage {
+interface ICErc20Storage {
     function underlying() external view returns (address);
 }

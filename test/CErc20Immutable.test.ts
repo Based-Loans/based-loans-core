@@ -33,7 +33,7 @@ describe('CErc20Immutable', function () {
 
     wbtc = await getErc20Contract(user1, WBTC_ADDRESS);
     usdc = await getErc20Contract(user1, USDC_ADDRESS);
-    await deployments.fixture(['protocol', 'blo', 'rewards', 'ethMarket', 'bMarkets']);
+    await deployments.fixture(['protocol', 'blo', 'rewards', 'ethMarket', 'bMarkets', 'liquidator']);
 
     bWBTC = await getEthersContract('CErc20Immutable.bWBTC', user1);
     bUSDC = await getEthersContract('CErc20Immutable.bUSDC', user1);
@@ -287,11 +287,7 @@ describe('CErc20Immutable', function () {
         });
 
         describe('setup liquidation', function () {
-          beforeEach(async function () {
-
-          })
-
-          it('liquidateBorrow()', async function () {
+          beforeEach('drop asset price', async function () {
             // getAccountLiquidity
             let liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
             expect(liquidity[0]).to.be.equal(0);
@@ -335,9 +331,11 @@ describe('CErc20Immutable', function () {
             await network.provider.send("evm_increaseTime", [15*60])
             await oracle.getUnderlyingPrice(bWBTC.address, {gasLimit: 500000});
             expect(await oracle.price('WBTC')).to.be.below('19099000000');
+          })
 
+          it('liquidateBorrow()', async function () {
             // confirm user1 is under
-            liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
+            let liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
             expect(liquidity[0]).to.be.equal(0);
             expect(liquidity[1]).to.be.equal(0);
             expect(liquidity[2]).to.be.above('2520000000000000000000');
@@ -357,7 +355,6 @@ describe('CErc20Immutable', function () {
               bUSDC.connect(liquidatorSigner).liquidateBorrow(user1, closeAmount, bWBTC.address)
             ).to.emit(bUSDC, 'LiquidateBorrow')
 
-
             // check liquidiator profits, dollar value of BTC should be 125% of paid loan
             let liquidationIncentiveMantissa = await comptroller.liquidationIncentiveMantissa();
             const WBTCBalAfter = await bWBTC.callStatic.balanceOfUnderlying(liquidator, {gasLimit: 500000});
@@ -373,8 +370,27 @@ describe('CErc20Immutable', function () {
             await bWBTC.connect(liquidatorSigner).redeem(await bWBTC.balanceOf(liquidator));
             expect(await wbtc.balanceOf(liquidator)).to.be.above('60000000');
           });
-        })
 
+          it('liquidator', async function () {
+            // confirm user1 is under
+            let liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
+            expect(liquidity[0]).to.be.equal(0);
+            expect(liquidity[1]).to.be.equal(0);
+            expect(liquidity[2]).to.be.above('2520000000000000000000');
+
+            expect(await wbtc.balanceOf(liquidatorContract.address)).to.be.equal(0);
+
+            // liquidate with liquidator contract
+            let tx = await liquidatorContract.liquidate(user1, bUSDC.address, bWBTC.address);
+            tx = await tx.wait();
+            expect(await wbtc.balanceOf(liquidatorContract.address)).to.be.above('9092195');
+
+            liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
+            expect(liquidity[0]).to.be.equal(0);
+            expect(liquidity[1]).to.be.above('1802501607735729205307');
+            expect(liquidity[2]).to.be.equal(0);
+          })
+        })
       })
     })
   })
