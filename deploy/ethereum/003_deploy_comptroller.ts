@@ -13,6 +13,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   });
 
   const comptroller = await deploy("Comptroller", {
+    contract: "Comptroller",
     from: deployer,
     log: true
   });
