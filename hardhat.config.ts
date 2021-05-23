@@ -26,6 +26,7 @@ const config: HardhatUserConfig = {
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/" + INFURA_ID,
       accounts: [`${privateKey}`],
+      deploy: ["deploy/rinkeby"]
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/" + INFURA_ID,
