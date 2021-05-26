@@ -349,7 +349,7 @@ const bUSDC__matic = {
 // ####### MATIC markets END #######
 
 module.exports = {
-  "mainnet": {bETH, bUSDC, bUSDT, bWBTC, bDPI, bDAI, bSHIBA, bKISHU, bELON, bAKITA, bBLO},
+  "mainnet": {bETH, bUSDC, bUSDT, bWBTC, bDPI, bSHIBA, bKISHU, bELON, bAKITA, bBLO},
   "matic": {"bMatic": bMatic__matic, "bUSDC": bUSDC__matic},
-  "rinkeby": {"bETH": bETH__rinkeby, "bUSDC": bUSDC__rinkeby, bUSDT, bDAI, "bWBTC": bWBTCRinkeby, bBLO: bBLORinkeby}
+  "rinkeby": {"bETH": bETH__rinkeby, "bUSDC": bUSDC__rinkeby, bUSDT, "bWBTC": bWBTCRinkeby, bBLO: bBLORinkeby}
 };
