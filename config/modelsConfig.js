@@ -25,7 +25,7 @@ const HQLAModel = {
 const OADefaultModel = {
   baseRatePerYear: '60000000000000000',
   multiplierPerYear: '200000000000000000',
-  jumpMultiplierPerYear: '30000000000000000000',
+  jumpMultiplierPerYear: '20000000000000000000',
   kink_: '750000000000000000'
 }
 

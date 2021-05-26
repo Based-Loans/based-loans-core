@@ -29,6 +29,30 @@ const tokens = {
     symbol: "DPI",
     symbolHash: "0x1a9e9982fcd295313fa8ea740fa7033aa110518733442e38c1d8a9d0e18ce77a"
   },
+  SHIBA: {
+    address: "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+    decimals: 18,
+    symbol: "SHIB",
+    symbolHash: "0xefa585451ff82e7559b7e4aa3c7d26b394fd121301bbf6f1da4ef6d29210466e"
+  },
+  KISHU: {
+    address: "0xA2b4C0Af19cC16a6CfAcCe81F192B024d625817D",
+    decimals: 9,
+    symbol: "KISHU",
+    symbolHash: "0x39094970400fc75d1ae18272c5d173b18e9df8e6cf84ff41bbf983f78ebdd603"
+  },
+  ELON: {
+    address: "0x761d38e5ddf6ccf6cf7c55759d5210750b5d60f3",
+    decimals: 18,
+    symbol: "ELON",
+    symbolHash: "0xa1e3c714d551534dab975a829a86d8cd25bf244ce5d1a21a9a06d87a45a2ce5c"
+  },
+  AKITA: {
+    address: "0x3301ee63fb29f863f2333bd4466acb46cd8323e6",
+    decimals: 18,
+    symbol: "AKITA",
+    symbolHash: "0x1c47244f6ad70d041c1ed2253fa1f242f6de9e912db99ab20e181943e4e7db83"
+  },
   CORE: {
     address: "0x62359Ed7505Efc61FF1D56fEF82158CcaffA23D7",
     decimals: 18,
