@@ -16,7 +16,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const tokenConfigs = [
     config.marketsConfig.bUSDC,
-    config.marketsConfig.bWBTC
+    config.marketsConfig.bWBTC,
+    config.marketsConfig.bTNTRinkeby
   ];
 
   for (let i = 0; i < tokenConfigs.length; i++) {
@@ -92,9 +93,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       (await comptroller.borrowCaps(bToken.cToken)).toString()
       != bToken.borrowCaps
     ) {
-      let tx = await comptroller._setMarketBorrowCaps(bToken.borrowCaps);
+      let tx = await comptroller._setMarketBorrowCaps([bToken.cToken], [bToken.borrowCaps]);
       tx = await tx.wait()
-      console.log(tx.events[0].args, `executing Comptroller._setMarketBorrowCaps (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
+      console.log(`executing Comptroller._setMarketBorrowCaps (tx: ${tx.transactionHash}) ...: performed with ${tx.gasUsed.toString()} gas`)
     } else {
       console.log(`skipping Comptroller._setMarketBorrowCaps (borrowCaps (${bToken.symbol}): ${(await comptroller.borrowCaps(bToken.cToken)).toString()})`)
     }

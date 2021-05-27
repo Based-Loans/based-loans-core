@@ -277,6 +277,28 @@ const bUSDC__rinkeby = {
   isComped: false
 }
 
+const bTNTRinkeby = {
+  tokenConfig: {
+    cToken: '#',
+    underlying: "0x8eca7c70f4ceae3ea6fde71c0f0bc616e9750d0a",
+    symbolHash: "0x2656f58b0a73a32f9b4ad1c8eec5812754603b0309487bb4d296a7758f796e1c",
+    baseUnit: (10**18).toString(),
+    priceSource: 2,
+    fixedPrice: 0,
+    uniswapMarket: '0x9aafe005b26139edde8666dd63b50036b273bc42',
+    isUniswapReversed: false
+  },
+  initialExchangeRateMantissa: '200000000000000000000000000',
+  name: 'Based Loans TNT',
+  symbol: 'bTNT',
+  decimals: '8',
+  reserveFactorMantissa: '0',
+  collateralFactorMantissa: '0',
+  borrowCaps: '955320107863' + (10**tokens.ELON.decimals).toString(), // 100% of uniswap liquidity
+  model: 'OADefaultModel',
+  isComped: false
+}
+
 const bWBTCRinkeby = {
   tokenConfig: {
     cToken: '#',
@@ -351,5 +373,5 @@ const bUSDC__matic = {
 module.exports = {
   "mainnet": {bETH, bUSDC, bUSDT, bWBTC, bDPI, bSHIBA, bKISHU, bELON, bAKITA, bBLO},
   "matic": {"bMatic": bMatic__matic, "bUSDC": bUSDC__matic},
-  "rinkeby": {"bETH": bETH__rinkeby, "bUSDC": bUSDC__rinkeby, bUSDT, "bWBTC": bWBTCRinkeby, bBLO: bBLORinkeby}
+  "rinkeby": {"bETH": bETH__rinkeby, "bUSDC": bUSDC__rinkeby, bUSDT, "bWBTC": bWBTCRinkeby, bBLO: bBLORinkeby, bTNTRinkeby: bTNTRinkeby}
 };
