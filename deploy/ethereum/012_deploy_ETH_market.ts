@@ -16,7 +16,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   );
 
   let bEthConfig = config.marketsConfig.bETH;
-  bEthConfig.name = 'CEther';
 
   const args = [
     comptroller.address,
@@ -27,6 +26,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     bEthConfig.decimals,
     deployer
   ]
+  bEthConfig.name = 'CEther';
 
   const bEther = await deploy(bEthConfig.name, {
     contract: "CEther",
