@@ -262,7 +262,7 @@ const bUSDC__rinkeby = {
     symbolHash: tokens.USDC.symbolHash,
     baseUnit: (10**tokens.USDC.decimals).toString(),
     priceSource: 1,
-    fixedPrice: 1000000,
+    fixedPrice: '1000000000000000000',
     uniswapMarket: '0x0000000000000000000000000000000000000000',
     isUniswapReversed: false
   },
@@ -353,7 +353,7 @@ const bUSDC__matic = {
     symbolHash: tokens.USDC__matic.symbolHash,
     baseUnit: (10**tokens.USDC__matic.decimals).toString(),
     priceSource: 1,
-    fixedPrice: 1000000,
+    fixedPrice: '1000000000000000000',
     uniswapMarket: '0x0000000000000000000000000000000000000000',
     isUniswapReversed: false
   },

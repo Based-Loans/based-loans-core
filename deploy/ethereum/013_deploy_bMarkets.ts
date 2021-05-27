@@ -59,6 +59,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         'addTokens',
         [tokenConfig]
       );
+      await execute(
+        'UniswapAnchoredView',
+        {from: deployer, log: true, gasLimit: 750000},
+        'getUnderlyingPrice',
+        bToken.cToken
+      );
     } else {
       console.log(`skipping UniswapAnchoredView.addTokens (newObservations[symbolHash]: ${observation.timestamp.toString()})`)
     }
