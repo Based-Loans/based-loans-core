@@ -7,7 +7,7 @@ import { getCurrentTime, setNextBlockTime, impersonateTransferFrom, mineBlock,
 import * as CONFIG from '../config';
 
 
-describe("BasedRewards", function () {
+describe.skip("BasedRewards", function () {
     let deployer: any, deployerSigner: any;
     let user1: any, user1Signer: any;
     let user2: any, user2Signer: any;

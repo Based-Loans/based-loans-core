@@ -5,7 +5,7 @@ import {expect} from 'chai';
 describe('UniswapAnchoredView', function () {
   let uniswapAnchoredView: any;
   let Unitroller: any;
-  let OAHighJumpModel: any;
+  let OADefaultModel: any;
   let deployer: string;
 
 
@@ -20,21 +20,21 @@ describe('UniswapAnchoredView', function () {
       await ethers.provider.getSigner(deployer)
     );
     Unitroller = await deployments.get('Unitroller');
-    OAHighJumpModel = await deployments.get('OAHighJumpModel');
+    OADefaultModel = await deployments.get('OADefaultModel');
   });
 
   it('should have ETH price', async function () {
     const ethPrice = await read('UniswapAnchoredView', 'price', 'ETH');
-    expect(ethPrice.toString()).to.be.equal('1706864922');
+    expect(ethPrice.toString()).to.be.equal('2873885174000000000000');
 
     const bETH = await deployments.get('CEther');
     const ethPriceView = await read('UniswapAnchoredView', 'getUnderlyingPriceView', bETH.address);
-    expect(ethPriceView.toString()).to.be.equal('1706864922000000000000');
+    expect(ethPriceView.toString()).to.be.equal('2873885174000000000000');
   });
 
   it('should have USDC price', async function () {
     const usdcPrice = await read('UniswapAnchoredView', 'price', 'USDC');
-    expect(usdcPrice.toString()).to.be.equal('1000000');
+    expect(usdcPrice.toString()).to.be.equal('1000000000000000000');
 
     const bUSDC = await deployments.get('CErc20Immutable.bUSDC');
     const usdcPriceView = await read('UniswapAnchoredView', 'getUnderlyingPriceView', bUSDC.address);
@@ -42,12 +42,23 @@ describe('UniswapAnchoredView', function () {
   });
 
   it('should have WBTC price', async function () {
-    const wbtcPrice = await read('UniswapAnchoredView', 'price', 'WBTC');
-    expect(wbtcPrice.toString()).to.be.equal('18012844583');
-
     const bWBTC = await deployments.get('CErc20Immutable.bWBTC');
+    await uniswapAnchoredView.getUnderlyingPrice(bWBTC.address);
+    const wbtcPrice = await read('UniswapAnchoredView', 'price', 'WBTC');
+    expect(wbtcPrice.toString()).to.be.equal('15747677098514863617925');
+
     const wbtcPriceView = await read('UniswapAnchoredView', 'getUnderlyingPriceView', bWBTC.address);
-    expect(wbtcPriceView.toString()).to.be.equal('180128445830000000000000000000000');
+    expect(wbtcPriceView.toString()).to.be.equal('157476770985148636179250000000000');
+  });
+
+  it('should have ELON price', async function () {
+    const bELON = await deployments.get('CErc20Immutable.bELON');
+    await uniswapAnchoredView.getUnderlyingPrice(bELON.address);
+    const elonPrice = await read('UniswapAnchoredView', 'price', 'ELON');
+    expect(elonPrice.toString()).to.be.equal('173842969533');
+
+    const elonPriceView = await read('UniswapAnchoredView', 'getUnderlyingPriceView', bELON.address);
+    expect(elonPriceView.toString()).to.be.equal('173842969533');
   });
 
   describe('configs', function () {
@@ -82,7 +93,7 @@ describe('UniswapAnchoredView', function () {
         args: [
           bTokenConfig.tokenConfig.underlying,
           Unitroller.address,
-          OAHighJumpModel.address,
+          OADefaultModel.address,
           bTokenConfig.initialExchangeRateMantissa,
           bTokenConfig.name,
           bTokenConfig.symbol,
@@ -93,7 +104,7 @@ describe('UniswapAnchoredView', function () {
     })
 
     it('should return 0 if token config does not exist', async function () {
-      expect(await read('UniswapAnchoredView', 'numTokens')).to.be.equal(3);
+      expect(await read('UniswapAnchoredView', 'numTokens')).to.be.equal(9);
 
       function requireZeroConfig(tokenConfig) {
         expect(tokenConfig.cToken).to.be.equal(ethers.constants.AddressZero);

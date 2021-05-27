@@ -291,7 +291,7 @@ describe('CErc20Immutable', function () {
             // getAccountLiquidity
             let liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
             expect(liquidity[0]).to.be.equal(0);
-            expect(liquidity[1]).to.be.equal('5063105913200000000000');
+            expect(liquidity[1]).to.be.equal('5738831702546283306424');
             expect(liquidity[2]).to.be.equal(0);
 
             // get WBTC
@@ -326,11 +326,11 @@ describe('CErc20Immutable', function () {
             expect(await wbtc.balanceOf(user1)).to.be.equal(0);
 
             // update price in oracle
-            expect(await oracle.price('WBTC')).to.be.equal('37657764783');
+            expect(await oracle.price('WBTC')).to.be.equal('39347079256365708266060');
             // time travel forward 15 min
             await network.provider.send("evm_increaseTime", [15*60])
             await oracle.getUnderlyingPrice(bWBTC.address, {gasLimit: 500000});
-            expect(await oracle.price('WBTC')).to.be.below('19099000000');
+            expect(await oracle.price('WBTC')).to.be.below('17019696517161409225235');
           })
 
           it('liquidateBorrow()', async function () {
@@ -361,8 +361,8 @@ describe('CErc20Immutable', function () {
             const BTCPrice = await oracle.price('WBTC');
             // remove 8 decimals from BTCPrice and 2 decimals to match 6 decimals of USDC
             // also div by 1e4 to remove potential precison errrors
-            expect(WBTCBalAfter.mul(BTCPrice).div(1e6).div(1e2).div(1e3)).to.be.equal(
-              closeAmount.mul(liquidationIncentiveMantissa).div(ethers.constants.WeiPerEther).div(1e3).sub(1)
+            expect(WBTCBalAfter.mul(BTCPrice).div('100000000000000000000').div(1e4)).to.be.equal(
+              closeAmount.mul(liquidationIncentiveMantissa).div('1000000000000000000').sub(1).div(1e4)
             );
 
             expect(await wbtc.balanceOf(liquidator)).to.be.equal(0);
@@ -383,11 +383,11 @@ describe('CErc20Immutable', function () {
             // liquidate with liquidator contract
             let tx = await liquidatorContract.liquidate(user1, bUSDC.address, bWBTC.address);
             tx = await tx.wait();
-            expect(await wbtc.balanceOf(liquidatorContract.address)).to.be.above('9092195');
+            expect(await wbtc.balanceOf(liquidatorContract.address)).to.be.above('8009826');
 
             liquidity = await comptroller.callStatic.getAccountLiquidity(user1);
             expect(liquidity[0]).to.be.equal(0);
-            expect(liquidity[1]).to.be.above('1802501607735729205307');
+            expect(liquidity[1]).to.be.above('1200674803512376422930');
             expect(liquidity[2]).to.be.equal(0);
           })
         })
