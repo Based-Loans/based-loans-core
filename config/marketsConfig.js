@@ -222,7 +222,7 @@ const bBLO = {
   reserveFactorMantissa: '0',
   collateralFactorMantissa: '0',
   borrowCaps: '0',
-  model: 'HQLAModel',
+  model: 'OADefaultModel',
   isComped: false
 }
 

@@ -37,7 +37,7 @@ const OAHighJumpModel = {
 }
 
 module.exports = {
-  "mainnet": [{DAIModel}, {HQLAModel}, {OADefaultModel}, {OAHighJumpModel}],
+  "mainnet": [{HQLAModel}, {OADefaultModel}],
   "matic": [{HQLAModel}, {OADefaultModel}, {OAHighJumpModel}],
   "rinkeby": [{"DAIModel": DAIModelRinkeby}, {HQLAModel}, {OADefaultModel}, {OAHighJumpModel}]
 };
