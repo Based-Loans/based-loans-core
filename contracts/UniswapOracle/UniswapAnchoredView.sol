@@ -127,7 +127,7 @@ contract UniswapAnchoredView is UniswapConfig {
         }
          // Comptroller needs prices in the format: ${raw price} * 1e(36 - baseUnit)
          // Since the prices in this view have 6 decimals, we must scale them by 1e(36 - 6 - baseUnit)
-        return mul(1e30, price) / config.baseUnit;
+        return mul(1e18, price) / config.baseUnit;
     }
 
     /**
@@ -140,7 +140,7 @@ contract UniswapAnchoredView is UniswapConfig {
         TokenConfig memory config = getTokenConfigByCToken(cToken);
          // Comptroller needs prices in the format: ${raw price} * 1e(36 - baseUnit)
          // Since the prices in this view have 6 decimals, we must scale them by 1e(36 - 6 - baseUnit)
-        return mul(1e30, priceInternal(config)) / config.baseUnit;
+        return mul(1e18, priceInternal(config)) / config.baseUnit;
     }
 
     function postPriceInternal(TokenConfig memory config) internal {
@@ -169,16 +169,16 @@ contract UniswapAnchoredView is UniswapConfig {
     }
 
     /**
-     * @dev Fetches the current eth/usd price from uniswap, with 6 decimals of precision.
-     *  Conversion factor is 1e18 for eth/usdc market, since we decode uniswap price statically with 18 decimals.
+     * @dev Fetches the current eth/usd price from uniswap, with 18 decimals of precision.
+     *  Conversion factor is 1e30 for eth/usdc market, since we decode uniswap price statically with 18 decimals.
      */
     function fetchEthPrice() internal returns (uint) {
-        return fetchAnchorPrice(getTokenConfigBySymbolHash(nativeTokenHash), ethBaseUnit);
+        return fetchAnchorPrice(getTokenConfigBySymbolHash(nativeTokenHash), 1e30);
     }
 
     /**
-     * @dev Fetches the current token/usd price from uniswap, with 6 decimals of precision.
-     * @param conversionFactor 1e18 if seeking the ETH price, and a 6 decimal ETH-USDC price in the case of other assets
+     * @dev Fetches the current token/usd price from uniswap, with 18 decimals of precision.
+     * @param conversionFactor 1e30 if seeking the ETH price, and a 18 decimal ETH-USDC price in the case of other assets
      */
     function fetchAnchorPrice(TokenConfig memory config, uint conversionFactor) internal virtual returns (uint) {
         (uint nowCumulativePrice, uint oldCumulativePrice, uint oldTimestamp) = pokeWindowValues(config);
@@ -196,7 +196,7 @@ contract UniswapAnchoredView is UniswapConfig {
 
         // Adjust rawUniswapPrice according to the units of the non-ETH asset
         // In the case of ETH, we would have to scale by 1e6 / USDC_UNITS, but since baseUnit2 is 1e6 (USDC), it cancels
-        anchorPrice = mul(unscaledPriceMantissa, config.baseUnit) / ethBaseUnit / expScale;
+        anchorPrice = mul(unscaledPriceMantissa / expScale, config.baseUnit) / ethBaseUnit;
 
         emit AnchorPriceUpdated(config.cToken, anchorPrice, oldTimestamp, block.timestamp);
 

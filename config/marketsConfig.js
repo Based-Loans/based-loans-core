@@ -32,7 +32,7 @@ const bUSDC = {
     symbolHash: tokens.USDC.symbolHash,
     baseUnit: (10**tokens.USDC.decimals).toString(),
     priceSource: 1,
-    fixedPrice: 1000000,
+    fixedPrice: '1000000000000000000',
     uniswapMarket: '0x0000000000000000000000000000000000000000',
     isUniswapReversed: false
   },
@@ -54,7 +54,7 @@ const bUSDT = {
     symbolHash: tokens.USDT.symbolHash,
     baseUnit: (10**tokens.USDT.decimals).toString(),
     priceSource: 1,
-    fixedPrice: 1000000,
+    fixedPrice: '1000000000000000000',
     uniswapMarket: '0x0000000000000000000000000000000000000000',
     isUniswapReversed: false
   },
