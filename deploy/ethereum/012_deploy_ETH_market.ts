@@ -48,6 +48,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       'addTokens',
       [tokenConfig]
     );
+    await execute(
+      'UniswapAnchoredView',
+      {from: deployer, log: true, gasLimit: 750000},
+      'getUnderlyingPrice',
+      bEthConfig.cToken
+    );
   }
 
   if((await read(bEthConfig.name, 'reserveFactorMantissa')).toString() != bEthConfig.reserveFactorMantissa) {
